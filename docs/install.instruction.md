@@ -48,7 +48,7 @@ Do not set a Sass `$preset`. Duration and easing are CSS variables on `:root` (`
 
 ---
 
-## 4. Keep the chrome classes
+## 4. Keep the Frame classes
 
 Projects already put these on header modules and the site bar. Leave them:
 

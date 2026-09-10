@@ -14,7 +14,7 @@ npm i github:gridonic/dastro-page-transitions#v0.1.1
 @use 'dastro-page-transitions/styles';
 ```
 
-Fade is the default. Pick another **Preset** with a class on `body` (`view-transition-slide`, `view-transition-slide-up`). Chrome uses the existing classes `.view-transition-header` and `.view-transition-site-header`.
+Fade is the default. Pick another **Preset** with a class on `body` (`view-transition-slide`, `view-transition-slide-up`). The **Frame** uses the existing classes `.view-transition-header` and `.view-transition-site-header`.
 
 ## Docs
 
