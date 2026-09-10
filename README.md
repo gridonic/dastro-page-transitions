@@ -7,7 +7,7 @@ Cross-document [View Transitions](https://developer.mozilla.org/en-US/docs/Web/A
 See [docs/install.instruction.md](./docs/install.instruction.md).
 
 ```bash
-npm i github:gridonic/dastro-page-transitions#v0.1.0
+npm i github:gridonic/dastro-page-transitions#v0.1.1
 ```
 
 ```scss
@@ -30,3 +30,11 @@ npm run dev
 ```
 
 The playground is at `playground/`. Switch Presets from the bar; click between pages to see the **View Transition**.
+
+## Releasing
+
+```bash
+npm run release
+```
+
+Follow the prompts. Then `git push` and `git push origin v<version>` (copied to the clipboard). `npm run release -- --dry-run` prints the same steps without writing.

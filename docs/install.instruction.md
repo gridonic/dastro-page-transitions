@@ -9,7 +9,7 @@ Follow every step in order.
 ## 1. Install the package
 
 ```bash
-npm i github:gridonic/dastro-page-transitions#v0.1.0
+npm i github:gridonic/dastro-page-transitions#v0.1.1
 ```
 
 Requires a Sass pipeline (every dastro project already has one). `dastro` and `astro` are optional peers.

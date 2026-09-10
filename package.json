@@ -1,6 +1,6 @@
 {
   "name": "dastro-page-transitions",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Cross-document View Transitions for dastro/Astro sites",
   "type": "module",
   "sideEffects": [
@@ -22,7 +22,8 @@
   "scripts": {
     "dev": "npm run dev -w playground",
     "build": "npm run build -w playground",
-    "preview": "npm run preview -w playground"
+    "preview": "npm run preview -w playground",
+    "release": "node scripts/release"
   },
   "workspaces": [
     "playground"
