@@ -1,0 +1,69 @@
+---
+import '../styles/playground.scss';
+import {
+  pageHref,
+  presetClass,
+  presets,
+  type PageId,
+  type PresetId,
+} from '../lib/routes';
+
+interface Props {
+  title: string;
+  tint: string;
+  preset: PresetId;
+  page: PageId;
+}
+
+const { title, tint, preset, page } = Astro.props;
+const bodyClass = presetClass(preset);
+
+const nav = [
+  { id: 'home' as const, label: 'Home' },
+  { id: 'about' as const, label: 'About' },
+  { id: 'work' as const, label: 'Work' },
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · page transitions</title>
+  </head>
+  <body class={bodyClass} style={`--page-bg: ${tint}`}>
+    <header class="site-header view-transition-site-header">
+      <a class="brand" href={pageHref(preset, 'home')}>Playground</a>
+      <nav>
+        {
+          nav.map((item) => (
+            <a
+              href={pageHref(preset, item.id)}
+              aria-current={page === item.id ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+      <div class="presets">
+        {
+          presets.map((item) => (
+            <a
+              href={pageHref(item, page)}
+              aria-current={preset === item ? 'page' : undefined}
+            >
+              {item === 'slide-up' ? 'Slide up' : item[0].toUpperCase() + item.slice(1)}
+            </a>
+          ))
+        }
+      </div>
+    </header>
+    <div class="page-header view-transition-header">
+      <h1>{title}</h1>
+    </div>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>

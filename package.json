@@ -1,0 +1,44 @@
+{
+  "name": "dastro-page-transitions",
+  "version": "0.1.0",
+  "description": "Cross-document View Transitions for dastro/Astro sites",
+  "type": "module",
+  "sideEffects": [
+    "*.scss"
+  ],
+  "exports": {
+    "./styles": {
+      "sass": "./src/styles/index.scss",
+      "default": "./src/styles/index.scss"
+    }
+  },
+  "files": [
+    "CONTEXT.md",
+    "README.md",
+    "docs",
+    "src",
+    ".node-version"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w playground",
+    "build": "npm run build -w playground",
+    "preview": "npm run preview -w playground"
+  },
+  "workspaces": [
+    "playground"
+  ],
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "astro": "^6.3.5 || ^7.0.0",
+    "dastro": "^2.1.5 || ^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "astro": {
+      "optional": true
+    },
+    "dastro": {
+      "optional": true
+    }
+  }
+}

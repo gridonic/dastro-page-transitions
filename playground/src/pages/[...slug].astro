@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { copy } from '../lib/copy';
+import { pageHref, staticPaths, type PageId, type PresetId } from '../lib/routes';
+
+export function getStaticPaths() {
+  return staticPaths();
+}
+
+interface Props {
+  preset: PresetId;
+  page: PageId;
+}
+
+const { preset, page } = Astro.props;
+const content = copy[page];
+---
+
+<Layout title={content.title} tint={content.tint} preset={preset} page={page}>
+  <p>{content.body}</p>
+  <p>
+    <a href={pageHref(preset, content.next.href)}>{content.next.label}</a>
+  </p>
+</Layout>

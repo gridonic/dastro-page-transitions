@@ -1,0 +1,35 @@
+html:has(body.view-transition-fade) {
+  --view-transition-old-name: fade-out;
+  --view-transition-new-name: fade-in;
+}
+
+html:has(body.view-transition-slide) {
+  --view-transition-old-name: slide-out;
+  --view-transition-new-name: slide-in;
+}
+
+html:has(body.view-transition-slide-up) {
+  --view-transition-old-name: slide-up-out;
+  --view-transition-new-name: slide-up-in;
+}
+
+::view-transition-old(*) {
+  animation: var(--view-transition-duration) var(--view-transition-ease)
+    var(--view-transition-old-name);
+}
+
+::view-transition-new(*) {
+  animation: var(--view-transition-duration) var(--view-transition-ease)
+    var(--view-transition-new-name);
+}
+
+::view-transition-old(header) {
+  animation: calc(var(--view-transition-duration) * 0.6)
+    var(--view-transition-ease) both var(--view-transition-old-name);
+}
+
+::view-transition-new(header) {
+  animation: calc(var(--view-transition-duration) * 0.6)
+    var(--view-transition-ease) calc(var(--view-transition-duration) * 0.4) both
+    var(--view-transition-new-name);
+}

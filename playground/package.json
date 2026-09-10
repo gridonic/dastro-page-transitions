@@ -1,0 +1,17 @@
+{
+  "name": "dastro-page-transitions-playground",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^7.2.0",
+    "dastro-page-transitions": "file:.."
+  },
+  "devDependencies": {
+    "sass-embedded": "^1.99.0"
+  }
+}
