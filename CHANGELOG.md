@@ -1,3 +1,9 @@
+### [0.2.0](https://github.com/gridonic/dastro-page-transitions/compare/v0.1.2...v0.2.0)
+
+- added more presets
+- changed design
+- add more presets modifiers
+
 ### [0.1.2](https://github.com/gridonic/dastro-page-transitions/compare/v0.1.1...v0.1.2)
 
 - changed naming from chrome to frame
