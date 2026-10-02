@@ -47,6 +47,20 @@ html:has(body.view-transition-slide) {
   --view-transition-header-name: none;
 }
 
+html:has(body.view-transition-flip) {
+  --view-transition-from-x: 1;
+  --view-transition-from-y: 0;
+  --view-transition-old-name: flip-out;
+  --view-transition-new-name: flip-in;
+  --view-transition-old-duration: calc(var(--view-transition-duration) * 0.6);
+  --view-transition-new-duration: calc(var(--view-transition-duration) * 0.6);
+  --view-transition-new-delay: calc(var(--view-transition-duration) * 0.6);
+  --view-transition-preset-old-ease: cubic-bezier(0.5, 0, 1, 0.6);
+  --view-transition-preset-new-ease: cubic-bezier(0, 0.4, 0.5, 1);
+  --view-transition-blend: normal;
+  --view-transition-header-name: none;
+}
+
 html:has(body.view-transition-cover) {
   --view-transition-old-name: cover-out;
   --view-transition-new-name: slide-in;
@@ -78,6 +92,26 @@ html:has(body.view-transition-iris) {
   --view-transition-header-name: none;
 }
 
+html:has(body.view-transition-split) {
+  --view-transition-old-name: reveal;
+  --view-transition-new-name: reveal;
+  --view-transition-old-duration: calc(var(--view-transition-duration) * 1.2);
+  --view-transition-new-duration: calc(var(--view-transition-duration) * 1.2);
+  --view-transition-preset-new-ease: var(--view-transition-ease-in-out);
+  --view-transition-blend: normal;
+  --view-transition-header-name: none;
+}
+
+html:has(body.view-transition-cutout) {
+  --view-transition-old-name: reveal;
+  --view-transition-new-name: reveal;
+  --view-transition-old-duration: calc(var(--view-transition-duration) * 1.6);
+  --view-transition-new-duration: calc(var(--view-transition-duration) * 1.6);
+  --view-transition-preset-new-ease: var(--view-transition-ease-soft);
+  --view-transition-blend: normal;
+  --view-transition-header-name: none;
+}
+
 html:has(body.view-transition-lines) {
   --view-transition-old-name: reveal;
   --view-transition-new-name: reveal;
@@ -88,10 +122,16 @@ html:has(body.view-transition-lines) {
   --view-transition-header-name: none;
 }
 
-// The edge slide, cover and wipe start from. For lines, left/right is the side each
+// The edge slide, cover and wipe start from. For split, left/right opens it
+// sideways and top/bottom opens it up and down. For lines, left/right is the side each
 // band wipes in from and top/bottom is the band that goes first, so it takes
 // one class of each pair.
 html:has(body.view-transition-from-top) {
+  --view-transition-split-size: 100% calc(50% + 1px);
+  --view-transition-split-a: to top;
+  --view-transition-split-b: to bottom;
+  --view-transition-split-a-at: top;
+  --view-transition-split-b-at: bottom;
   --view-transition-from-x: 0;
   --view-transition-from-y: -1;
   --view-transition-wipe-angle: 180deg;
@@ -99,6 +139,11 @@ html:has(body.view-transition-from-top) {
 }
 
 html:has(body.view-transition-from-bottom) {
+  --view-transition-split-size: 100% calc(50% + 1px);
+  --view-transition-split-a: to top;
+  --view-transition-split-b: to bottom;
+  --view-transition-split-a-at: top;
+  --view-transition-split-b-at: bottom;
   --view-transition-from-x: 0;
   --view-transition-from-y: 1;
   --view-transition-wipe-angle: 0deg;
@@ -106,6 +151,11 @@ html:has(body.view-transition-from-bottom) {
 }
 
 html:has(body.view-transition-from-left) {
+  --view-transition-split-size: calc(50% + 1px) 100%;
+  --view-transition-split-a: to left;
+  --view-transition-split-b: to right;
+  --view-transition-split-a-at: left;
+  --view-transition-split-b-at: right;
   --view-transition-from-x: -1;
   --view-transition-from-y: 0;
   --view-transition-wipe-angle: 90deg;
@@ -114,6 +164,11 @@ html:has(body.view-transition-from-left) {
 }
 
 html:has(body.view-transition-from-right) {
+  --view-transition-split-size: calc(50% + 1px) 100%;
+  --view-transition-split-a: to left;
+  --view-transition-split-b: to right;
+  --view-transition-split-a-at: left;
+  --view-transition-split-b-at: right;
   --view-transition-from-x: 1;
   --view-transition-from-y: 0;
   --view-transition-wipe-angle: 270deg;
@@ -153,7 +208,7 @@ html:has(body.view-transition-from-right) {
   );
 }
 
-// wipe and iris: a mask edge travels across the new page. The edge is hard
+// wipe, iris and split: a mask edge travels across the new page. The edge is hard
 // unless `--view-transition-feather` gives it a width to fade over.
 // `--view-transition-divider` opens a gap of that width in front of a hard
 // edge, cut out of the old page, and the divider colour shows through it.
@@ -188,15 +243,77 @@ html:has(body.view-transition-iris)::view-transition-old(root) {
   mask-image: radial-gradient(circle farthest-corner at 50% 50%, $reveal-old);
 }
 
+// split: the wipe, run twice from the middle outwards. Each half of the page
+// is its own mask layer with its own edge.
+html:has(body.view-transition-split) {
+  &::view-transition-old(root),
+  &::view-transition-new(root) {
+    mask-position:
+      var(--view-transition-split-a-at),
+      var(--view-transition-split-b-at);
+    mask-size: var(--view-transition-split-size);
+    mask-repeat: no-repeat;
+  }
+
+  &::view-transition-new(root) {
+    mask-image:
+      linear-gradient(var(--view-transition-split-a), $reveal-new),
+      linear-gradient(var(--view-transition-split-b), $reveal-new);
+  }
+
+  &::view-transition-old(root) {
+    mask-image:
+      linear-gradient(var(--view-transition-split-a), $reveal-old),
+      linear-gradient(var(--view-transition-split-b), $reveal-old);
+  }
+}
+
+// cutout: the new page shows through `--view-transition-shape`, which grows
+// from nothing at the centre. It grows by a constant factor per unit of time,
+// which is what reads as zooming in through it.
+//
+// The shape is drawn as large as it gets, so it stops at 300vmax, where a
+// solid shape has long covered the viewport. A shape with holes never covers
+// it, so over the last quarter the whole new page fades in behind it.
+$cutout-size: calc(10vmax * (pow(31, var(--view-transition-progress)) - 1));
+$cutout-rest: linear-gradient(
+  rgb(0 0 0 / clamp(0, (var(--view-transition-progress) - 0.75) * 4, 1)) 0 0
+);
+
+html:has(body.view-transition-cutout) {
+  &::view-transition-old(root),
+  &::view-transition-new(root) {
+    mask-position: center;
+    mask-repeat: no-repeat;
+  }
+
+  &::view-transition-new(root) {
+    mask-image: var(--view-transition-shape), $cutout-rest;
+    mask-size:
+      $cutout-size auto,
+      100% 100%;
+  }
+
+  // The old page loses the same shape, grown by the divider on every side, so
+  // the divider colour outlines the cutout.
+  &::view-transition-old(root) {
+    mask-image: var(--view-transition-shape), linear-gradient(#000 0 0);
+    mask-size:
+      calc(#{$cutout-size} + var(--view-transition-divider) * 2) auto,
+      100% 100%;
+    mask-composite: exclude;
+  }
+}
+
 // The old page only carries the gap, so it has to move exactly with the new.
-html:has(body:is(.view-transition-wipe, .view-transition-iris, .view-transition-lines))::view-transition-old(root) {
+html:has(body:is(.view-transition-wipe, .view-transition-iris, .view-transition-split, .view-transition-cutout, .view-transition-lines))::view-transition-old(root) {
   animation-timing-function: var(
     --view-transition-new-ease,
     var(--view-transition-ease, var(--view-transition-preset-new-ease))
   );
 }
 
-html:has(body:is(.view-transition-wipe, .view-transition-iris, .view-transition-lines))::view-transition-image-pair(root) {
+html:has(body:is(.view-transition-wipe, .view-transition-iris, .view-transition-split, .view-transition-cutout, .view-transition-lines))::view-transition-image-pair(root) {
   background: var(--view-transition-divider-color);
 }
 

@@ -28,6 +28,8 @@
   --view-transition-ease-in-out: cubic-bezier(0.6, 0, 0.1, 1);
   --view-transition-backdrop: transparent;
   --view-transition-blur: 20px;
+  --view-transition-perspective: 150vmax;
+  --view-transition-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E");
   --view-transition-feather: 0px;
   --view-transition-divider: 0px;
   --view-transition-divider-color: currentColor;
@@ -53,6 +55,11 @@
   --view-transition-from-x: 0;
   --view-transition-from-y: 1;
   --view-transition-wipe-angle: 0deg;
+  --view-transition-split-size: calc(50% + 1px) 100%;
+  --view-transition-split-a: to left;
+  --view-transition-split-b: to right;
+  --view-transition-split-a-at: left;
+  --view-transition-split-b-at: right;
   --view-transition-lines-x: 0%;
   --view-transition-lines-angle: 90deg;
   --view-transition-lines-reverse: 0;

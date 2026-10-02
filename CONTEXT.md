@@ -13,11 +13,11 @@ The browser API (snapshots, `::view-transition-*` pseudos) enabled by `@view-tra
 *Avoid*: treating ClientRouter or an Astro component as what starts it
 
 **Preset**:
-The one site-wide animation for the root page swap and the page header. A bundle of custom properties (keyframes, durations, delays, easing, whether the page header is its own **Named group**). Names: fade, rise, dip, blur, slide, cover, wipe, iris, lines. Default fade. Motion details are not locked.
+The one site-wide animation for the root page swap and the page header. A bundle of custom properties (keyframes, durations, delays, easing, whether the page header is its own **Named group**). Names: fade, rise, dip, blur, slide, flip, cover, wipe, iris, split, cutout, lines. Default fade. Motion details are not locked.
 *Avoid*: using this for site-header motion, treating a keyframe as the Preset
 
 **Origin**:
-The edge a **Preset** starts from, for the Presets that have one (slide, cover, wipe, lines). A second class on `body`, `view-transition-from-top|right|bottom|left`, next to the Preset class. Fixed for the site; it never changes with the navigation.
+The edge a **Preset** starts from, for the Presets that have one (slide, flip, cover, wipe, split, lines). A second class on `body`, `view-transition-from-top|right|bottom|left`, next to the Preset class. Fixed for the site; it never changes with the navigation.
 *Avoid*: direction, reverse, a separate Preset per edge (slide-up)
 
 **Named group**:

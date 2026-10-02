@@ -14,7 +14,7 @@ npm i github:gridonic/dastro-page-transitions#v0.3.0
 @use 'dastro-page-transitions/styles';
 ```
 
-Fade is the default. Pick another **Preset** with a class on `body`: `view-transition-rise`, `-dip`, `-blur`, `-slide`, `-cover`, `-wipe`, `-iris` or `-lines`. Slide, cover, wipe and lines take an **Origin** as a second class: `view-transition-from-top`, `-right`, `-bottom` or `-left`. The **Frame** uses the existing classes `.view-transition-header` and `.view-transition-site-header`.
+Fade is the default. Pick another **Preset** with a class on `body`: `view-transition-rise`, `-dip`, `-blur`, `-slide`, `-flip`, `-cover`, `-wipe`, `-iris`, `-split`, `-cutout` or `-lines`. Slide, flip, cover, wipe, split and lines take an **Origin** as a second class: `view-transition-from-top`, `-right`, `-bottom` or `-left`. The **Frame** uses the existing classes `.view-transition-header` and `.view-transition-site-header`.
 
 ## Docs
 

@@ -4,9 +4,12 @@ export const presets = [
   'dip',
   'blur',
   'slide',
+  'flip',
   'cover',
   'wipe',
   'iris',
+  'split',
+  'cutout',
   'lines',
 ] as const;
 export const pages = ['home', 'about', 'work', 'long', 'hero'] as const;
@@ -14,7 +17,7 @@ export const pages = ['home', 'about', 'work', 'long', 'hero'] as const;
 export type PresetId = (typeof presets)[number];
 export type PageId = (typeof pages)[number];
 
-export const families = ['Fade', 'Push', 'Layered'] as const;
+export const families = ['Fade', 'Push', 'Turn', 'Layered'] as const;
 export type Family = (typeof families)[number];
 
 export const presetInfo: Record<
@@ -46,6 +49,11 @@ export const presetInfo: Record<
     motion: 'The new page pushes the old one out.',
     header: 'With the page',
   },
+  flip: {
+    family: 'Turn',
+    motion: 'The old page turns away to edge-on, then the new page turns in.',
+    header: 'With the page',
+  },
   cover: {
     family: 'Layered',
     motion: 'The new page slides up over the old one, which recedes.',
@@ -61,6 +69,16 @@ export const presetInfo: Record<
     motion: 'A circle growing from the centre reveals the new page.',
     header: 'With the page',
   },
+  split: {
+    family: 'Layered',
+    motion: 'The old page opens from the middle outwards over the new page.',
+    header: 'With the page',
+  },
+  cutout: {
+    family: 'Layered',
+    motion: 'A shape grows from the centre and the new page shows through it.',
+    header: 'With the page',
+  },
   lines: {
     family: 'Layered',
     motion: 'Bands reveal the new page left to right, top to bottom.',
@@ -71,8 +89,10 @@ export const presetInfo: Record<
 // The first direction is the Preset's default and is left out of the URL.
 export const directions: Partial<Record<PresetId, readonly string[]>> = {
   slide: ['right', 'left', 'bottom', 'top'],
+  flip: ['right', 'left', 'bottom', 'top'],
   cover: ['bottom', 'top', 'left', 'right'],
   wipe: ['bottom', 'top', 'left', 'right'],
+  split: ['left', 'top'],
   lines: ['left-top', 'right-top', 'left-bottom', 'right-bottom'],
 };
 
@@ -92,7 +112,10 @@ export function presetLabel(preset: PresetId) {
   return label[0].toUpperCase() + label.slice(1);
 }
 
-export function directionLabel(direction: string) {
+export function directionLabel(preset: PresetId, direction: string) {
+  if (preset === 'split') {
+    return direction === 'left' ? 'Sideways' : 'Up and down';
+  }
   return `From ${direction.replace('-', ', ')}`;
 }
 
@@ -106,7 +129,8 @@ function segments(preset: PresetId, page: PageId, direction?: string) {
 }
 
 export function pageHref(preset: PresetId, page: PageId, direction?: string) {
-  return `/${segments(preset, page, direction).join('/')}`;
+  const path = segments(preset, page, direction).join('/');
+  return path ? `/${path}/` : '/';
 }
 
 export function staticPaths() {

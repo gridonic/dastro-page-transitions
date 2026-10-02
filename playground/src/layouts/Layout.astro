@@ -1,4 +1,5 @@
 ---
+import { existsSync } from 'node:fs';
 import '../styles/playground.scss';
 import Info from '../components/Info.astro';
 import {
@@ -28,6 +29,42 @@ const bodyClass = [presetClass(preset, direction), variant && `-${variant}`]
   .filter(Boolean)
   .join(' ');
 
+// GT Walsheim is licensed and not in the repo. Without the files the page uses
+// the system font and does not request them.
+const hasFonts = existsSync('public/fonts/GT-Walsheim-Medium.woff2');
+const fontFaces = `
+  @font-face { font-family: 'GT Walsheim'; font-weight: 500; font-display: swap;
+    src: url('/fonts/GT-Walsheim-Medium.woff2') format('woff2'); }
+  @font-face { font-family: 'GT Walsheim'; font-weight: 700; font-display: swap;
+    src: url('/fonts/GT-Walsheim-Bold.woff2') format('woff2'); }`;
+
+// Shapes for the cutout Preset, as the `url()` a site would point at its own SVG.
+const svg = (viewBox: string, body: string) =>
+  `url("data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='${viewBox}'>${body}</svg>`,
+  )}")`;
+const shapes = [
+  { label: 'Circle', value: '' },
+  {
+    label: 'Gridonic mark',
+    value: svg(
+      '0 0 120 120',
+      "<path d='M60.426 33.9563L53.2554 41.127L60.4503 48.3218L67.6209 41.1512L60.426 33.9563Z'/><path d='M60 0C26.8595 0 0 26.8595 0 60C0 93.1405 26.8595 120 60 120C93.1405 120 120 93.1405 120 60C120 26.8595 93.129 0 60 0ZM36.6692 57.716L31.9871 53.0339L36.6692 48.3517L41.3513 53.0339L36.6692 57.716ZM77.0156 88.6753L72.322 93.3689L60.4454 81.4922L48.6372 93.3003L43.9437 88.6068L55.7518 76.7986L43.8751 64.922L48.5687 60.2284L60.4454 72.1051L67.6399 64.9105L43.8637 41.1344L60.434 24.5641L77.027 41.1572L65.1618 53.0225L77.0384 64.8991L65.1504 76.7872L77.027 88.6639L77.0156 88.6753ZM84.1873 57.7274L79.5051 53.0453L84.1873 48.3631L88.8694 53.0453L84.1873 57.7274Z'/>",
+    ),
+  },
+  {
+    label: 'Star',
+    value: svg(
+      '0 0 24 24',
+      "<path d='M12 1l3.1 7.3 7.9.7-6 5.2 1.8 7.8L12 17.9 5.2 22l1.8-7.8-6-5.2 7.9-.7z'/>",
+    ),
+  },
+  {
+    label: 'Diamond',
+    value: svg('0 0 2 2', "<path d='M1 0l1 1-1 1-1-1z'/>"),
+  },
+];
+
 // The page's own colours sit on `html`, where the transition can read them.
 const foreground = variant === 'hero' ? '#faf9f7' : '#181716';
 
@@ -45,6 +82,7 @@ const nav = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} · page transitions</title>
+    {hasFonts && <style is:inline set:html={fontFaces} />}
     <script is:inline>
       // Panel settings live in sessionStorage, keyed by the variable they set.
       // They reach the page as a stylesheet rule, the way a site would set
@@ -147,7 +185,7 @@ const nav = [
                     value={pageHref(preset, page, item)}
                     selected={direction === item}
                   >
-                    {directionLabel(item)}
+                    {directionLabel(preset, item)}
                   </option>
                 ))}
               </select>
@@ -155,7 +193,7 @@ const nav = [
           )
         }
         {
-          (preset === 'wipe' || preset === 'iris') && (
+          ['wipe', 'iris', 'split'].includes(preset) && (
             <label>
               <span class="name">
                 Edge
@@ -165,6 +203,21 @@ const nav = [
                 <option value="">Hard</option>
                 <option value="12vmax">Feathered</option>
                 <option value="40vmax">Very soft</option>
+              </select>
+            </label>
+          )
+        }
+        {
+          preset === 'cutout' && (
+            <label>
+              <span class="name">
+                Shape
+                <Info text="The SVG the new page shows through. It grows from the centre until it fills the screen." />
+              </span>
+              <select data-var="--view-transition-shape">
+                {shapes.map((shape) => (
+                  <option value={shape.value}>{shape.label}</option>
+                ))}
               </select>
             </label>
           )
@@ -185,7 +238,7 @@ const nav = [
           )
         }
         {
-          ['slide', 'cover', 'wipe', 'iris', 'lines'].includes(preset) && (
+          ['slide', 'cover', 'wipe', 'iris', 'split', 'cutout', 'lines'].includes(preset) && (
             <>
               <label>
                 <span class="name">

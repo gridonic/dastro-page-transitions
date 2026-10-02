@@ -73,6 +73,51 @@
   }
 }
 
+// flip turns around the axis that faces the edge set by
+// `view-transition-from-*`. Each page only ever shows its front: the old one
+// turns away to edge-on, then the new one turns in from edge-on.
+@keyframes flip-out {
+  from {
+    transform: perspective(var(--view-transition-perspective))
+      rotate3d(
+        var(--view-transition-from-y),
+        calc(var(--view-transition-from-x) * -1),
+        0,
+        0deg
+      );
+  }
+  to {
+    transform: perspective(var(--view-transition-perspective))
+      rotate3d(
+        var(--view-transition-from-y),
+        calc(var(--view-transition-from-x) * -1),
+        0,
+        90deg
+      );
+  }
+}
+
+@keyframes flip-in {
+  from {
+    transform: perspective(var(--view-transition-perspective))
+      rotate3d(
+        var(--view-transition-from-y),
+        calc(var(--view-transition-from-x) * -1),
+        0,
+        -90deg
+      );
+  }
+  to {
+    transform: perspective(var(--view-transition-perspective))
+      rotate3d(
+        var(--view-transition-from-y),
+        calc(var(--view-transition-from-x) * -1),
+        0,
+        0deg
+      );
+  }
+}
+
 @keyframes cover-out {
   from {
     filter: brightness(1);
