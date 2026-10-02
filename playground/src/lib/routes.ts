@@ -26,62 +26,62 @@ export const presetInfo: Record<
 > = {
   fade: {
     family: 'Fade',
-    motion: 'The pages cross-fade.',
+    motion: 'The old page fades out while the new page fades in on top of it.',
     header: 'Staggered',
   },
   rise: {
     family: 'Fade',
-    motion: 'The old page fades out, the new page fades in rising.',
+    motion: 'The old page fades out and drifts up. The new page fades in, rising into place.',
     header: 'Staggered',
   },
   dip: {
     family: 'Fade',
-    motion: 'The old page fades out fully, then the new page fades in.',
+    motion: 'The old page fades out completely, then the new page fades in. The two are never visible together.',
     header: 'Staggered',
   },
   blur: {
     family: 'Fade',
-    motion: 'The old page blurs away, the new page sharpens in.',
+    motion: 'The old page goes out of focus and disappears. The new page comes into focus.',
     header: 'Staggered',
   },
   slide: {
     family: 'Push',
-    motion: 'The new page pushes the old one out.',
+    motion: 'The new page comes in from one edge and pushes the old page out of the other.',
     header: 'With the page',
   },
   flip: {
     family: 'Turn',
-    motion: 'The old page turns away to edge-on, then the new page turns in.',
+    motion: 'The old page turns around its own axis until it is edge-on, then the new page turns in to face you.',
     header: 'With the page',
   },
   cover: {
     family: 'Layered',
-    motion: 'The new page slides up over the old one, which recedes.',
+    motion: 'The new page slides in over the old page like a sheet, while the old page shrinks back and dims.',
     header: 'With the page',
   },
   wipe: {
     family: 'Layered',
-    motion: 'An edge moving bottom to top reveals the new page.',
+    motion: 'An edge travels across the screen. Behind it is the new page, ahead of it the old one, and neither moves.',
     header: 'With the page',
   },
   iris: {
     family: 'Layered',
-    motion: 'A circle growing from the centre reveals the new page.',
+    motion: 'A circle opens at the centre and grows until the new page fills the screen.',
     header: 'With the page',
   },
   split: {
     family: 'Layered',
-    motion: 'The old page opens from the middle outwards over the new page.',
+    motion: 'The old page opens along the middle like a pair of doors, revealing the new page behind it.',
     header: 'With the page',
   },
   cutout: {
     family: 'Layered',
-    motion: 'A shape grows from the centre and the new page shows through it.',
+    motion: 'A shape is cut out of the old page at the centre and grows, as if zooming through it into the new page.',
     header: 'With the page',
   },
   lines: {
     family: 'Layered',
-    motion: 'Bands reveal the new page left to right, top to bottom.',
+    motion: 'The screen is cut into horizontal bands. Each band wipes to the new page, one after another, forming a staircase edge.',
     header: 'With the page',
   },
 };
