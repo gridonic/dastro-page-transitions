@@ -41,10 +41,38 @@ Fade runs when no Preset class is set. Pass one class through LayoutBase’s `bo
 | Class | Motion |
 |---|---|
 | _(omit)_ or `view-transition-fade` | Fade (default) |
-| `view-transition-slide` | Horizontal slide |
-| `view-transition-slide-up` | Vertical slide |
+| `view-transition-rise` | Old page fades out, new page fades in rising |
+| `view-transition-dip` | Old page fades out fully, then the new page fades in |
+| `view-transition-blur` | Old page blurs away, new page sharpens in |
+| `view-transition-slide` | New page pushes the old one out |
+| `view-transition-cover` | New page slides in over the old one |
+| `view-transition-wipe` | New page is revealed by a moving edge |
+| `view-transition-iris` | New page is revealed by a circle growing from the centre |
+| `view-transition-lines` | New page is revealed in bands, one after another |
 
-Do not set a Sass `$preset`. Duration and easing are CSS variables on `:root` (`--view-transition-duration`, `--view-transition-ease`, plus `-fast` / `-slow`).
+Slide, cover, wipe and lines start from an edge, their **Origin**. Add a second class to change it:
+
+```astro
+<LayoutBase bodyClass="ui-sticky-footer text-md view-transition-cover view-transition-from-left">
+```
+
+| Preset | Default | `view-transition-from-…` |
+|---|---|---|
+| slide | `right` | `top`, `right`, `bottom`, `left`: the edge the new page comes in from |
+| cover | `bottom` | `top`, `right`, `bottom`, `left`: the edge the new page comes in from |
+| wipe | `bottom` | `top`, `right`, `bottom`, `left`: the edge the reveal starts from |
+| lines | `left` and `top` | `left` or `right`: the side each band starts from. `top` or `bottom`: the band that goes first. Takes one of each. |
+
+`view-transition-slide-up` no longer exists; use `view-transition-slide view-transition-from-bottom`.
+
+Do not set a Sass `$preset`. These CSS variables on `:root` tune any Preset:
+
+| Variable | Default | Effect |
+|---|---|---|
+| `--view-transition-duration` | `0.6s` | Base length. Every Preset's timings are fractions of it. |
+| `--view-transition-backdrop` | `transparent` | Colour behind the pages, seen in the gap of `dip`, `rise` and `blur` and around the old page in `cover`. Transparent shows the incoming page's background. |
+| `--view-transition-blur` | `20px` | Blur radius of `blur`. |
+| `--view-transition-feather` | `0px` | Width the edge of `wipe` and `iris` fades over. `0px` is a hard edge; try `20vh`. |
 
 ---
 
@@ -57,7 +85,7 @@ Projects already put these on header modules and the site bar. Leave them:
 <header class="site-header view-transition-site-header">
 ```
 
-`.view-transition-header` follows the **Preset**. `.view-transition-site-header` does not animate.
+The **Preset** decides what `.view-transition-header` does: under fade, rise, dip and blur it arrives a beat after the page; under the others it moves as part of the page. `.view-transition-site-header` does not animate.
 
 ---
 

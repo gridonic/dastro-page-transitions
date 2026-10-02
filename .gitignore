@@ -19,3 +19,6 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# licensed fonts, copied locally for the playground
+playground/public/fonts/

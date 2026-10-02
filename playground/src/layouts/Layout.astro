@@ -1,8 +1,13 @@
 ---
 import '../styles/playground.scss';
 import {
+  directionLabel,
+  directionsOf,
+  families,
   pageHref,
   presetClass,
+  presetInfo,
+  presetLabel,
   presets,
   type PageId,
   type PresetId,
@@ -13,15 +18,21 @@ interface Props {
   tint: string;
   preset: PresetId;
   page: PageId;
+  direction?: string;
+  variant?: 'long' | 'hero';
 }
 
-const { title, tint, preset, page } = Astro.props;
-const bodyClass = presetClass(preset);
+const { title, tint, preset, page, direction, variant } = Astro.props;
+const bodyClass = [presetClass(preset, direction), variant && `-${variant}`]
+  .filter(Boolean)
+  .join(' ');
 
 const nav = [
   { id: 'home' as const, label: 'Home' },
   { id: 'about' as const, label: 'About' },
   { id: 'work' as const, label: 'Work' },
+  { id: 'long' as const, label: 'Long' },
+  { id: 'hero' as const, label: 'Hero' },
 ];
 ---
 
@@ -30,40 +41,117 @@ const nav = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} · page transitions</title>
+    <script is:inline>
+      document.documentElement.style.setProperty(
+        '--view-transition-feather',
+        sessionStorage.getItem('feather') || '0px',
+      );
+    </script>
   </head>
   <body class={bodyClass} style={`--page-bg: ${tint}`}>
     <header class="site-header view-transition-site-header">
-      <a class="brand" href={pageHref(preset, 'home')}>Playground</a>
-      <nav>
+      <div class="bar">
+        <a class="brand" href={pageHref(preset, 'home', direction)}>
+          <svg class="mark" viewBox="0 0 120 120" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M60.426 33.9563L53.2554 41.127L60.4503 48.3218L67.6209 41.1512L60.426 33.9563Z"
+            ></path>
+            <path
+              fill="currentColor"
+              d="M60 0C26.8595 0 0 26.8595 0 60C0 93.1405 26.8595 120 60 120C93.1405 120 120 93.1405 120 60C120 26.8595 93.129 0 60 0ZM36.6692 57.716L31.9871 53.0339L36.6692 48.3517L41.3513 53.0339L36.6692 57.716ZM77.0156 88.6753L72.322 93.3689L60.4454 81.4922L48.6372 93.3003L43.9437 88.6068L55.7518 76.7986L43.8751 64.922L48.5687 60.2284L60.4454 72.1051L67.6399 64.9105L43.8637 41.1344L60.434 24.5641L77.027 41.1572L65.1618 53.0225L77.0384 64.8991L65.1504 76.7872L77.027 88.6639L77.0156 88.6753ZM84.1873 57.7274L79.5051 53.0453L84.1873 48.3631L88.8694 53.0453L84.1873 57.7274Z"
+            ></path>
+          </svg>
+          <span>Page transitions</span>
+        </a>
+        <nav class="pages" aria-label="Pages">
+          {
+            nav.map((item) => (
+              <a
+                href={pageHref(preset, item.id, direction)}
+                aria-current={page === item.id ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+        <label class="preset">
+          <span class="label">Preset</span>
+          <select data-navigate>
+            {
+              families.map((family) => (
+                <optgroup label={family}>
+                  {presets
+                    .filter((item) => presetInfo[item].family === family)
+                    .map((item) => (
+                      <option
+                        value={pageHref(item, page)}
+                        selected={preset === item}
+                      >
+                        {presetLabel(item)}
+                      </option>
+                    ))}
+                </optgroup>
+              ))
+            }
+          </select>
+        </label>
         {
-          nav.map((item) => (
-            <a
-              href={pageHref(preset, item.id)}
-              aria-current={page === item.id ? 'page' : undefined}
-            >
-              {item.label}
-            </a>
-          ))
+          directionsOf(preset).length > 0 && (
+            <label class="preset">
+              <span class="label">Direction</span>
+              <select data-navigate>
+                {directionsOf(preset).map((item) => (
+                  <option
+                    value={pageHref(preset, page, item)}
+                    selected={direction === item}
+                  >
+                    {directionLabel(item)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )
         }
-      </nav>
-      <div class="presets">
         {
-          presets.map((item) => (
-            <a
-              href={pageHref(item, page)}
-              aria-current={preset === item ? 'page' : undefined}
-            >
-              {item === 'slide-up' ? 'Slide up' : item[0].toUpperCase() + item.slice(1)}
-            </a>
-          ))
+          (preset === 'wipe' || preset === 'iris') && (
+            <label class="preset">
+              <span class="label">Edge</span>
+              <select data-feather>
+                <option value="0px">Hard</option>
+                <option value="12vmax">Feathered</option>
+                <option value="40vmax">Very soft</option>
+              </select>
+            </label>
+          )
         }
       </div>
     </header>
     <div class="page-header view-transition-header">
+      <p class="eyebrow">{presetInfo[preset].family} · {presetLabel(preset)}</p>
       <h1>{title}</h1>
     </div>
     <main>
       <slot />
     </main>
+    <script is:inline>
+      const feather = document.querySelector('[data-feather]');
+      if (feather) {
+        feather.value = sessionStorage.getItem('feather') || '0px';
+        feather.addEventListener('change', () => {
+          sessionStorage.setItem('feather', feather.value);
+          document.documentElement.style.setProperty(
+            '--view-transition-feather',
+            feather.value,
+          );
+        });
+      }
+      document.querySelectorAll('[data-navigate]').forEach((select) => {
+        select.addEventListener('change', () => {
+          location.href = select.value;
+        });
+      });
+    </script>
   </body>
 </html>

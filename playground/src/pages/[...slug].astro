@@ -1,7 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { copy } from '../lib/copy';
-import { pageHref, staticPaths, type PageId, type PresetId } from '../lib/routes';
+import {
+  pageHref,
+  presetClass,
+  presetInfo,
+  staticPaths,
+  type PageId,
+  type PresetId,
+} from '../lib/routes';
 
 export function getStaticPaths() {
   return staticPaths();
@@ -10,15 +17,53 @@ export function getStaticPaths() {
 interface Props {
   preset: PresetId;
   page: PageId;
+  direction?: string;
 }
 
-const { preset, page } = Astro.props;
+const { preset, page, direction } = Astro.props;
 const content = copy[page];
+const info = presetInfo[preset];
+const sections = content.variant === 'long' ? 6 : 0;
 ---
 
-<Layout title={content.title} tint={content.tint} preset={preset} page={page}>
-  <p>{content.body}</p>
-  <p>
-    <a href={pageHref(preset, content.next.href)}>{content.next.label}</a>
-  </p>
+<Layout
+  title={content.title}
+  tint={content.tint}
+  preset={preset}
+  page={page}
+  direction={direction}
+  variant={content.variant}
+>
+  <p class="lead">{content.body}</p>
+
+  <dl class="facts">
+    <div>
+      <dt>Body class</dt>
+      <dd class="mono">{presetClass(preset, direction)}</dd>
+    </div>
+    <div>
+      <dt>Motion</dt>
+      <dd>{info.motion}</dd>
+    </div>
+    <div>
+      <dt>Page header</dt>
+      <dd>{info.header}</dd>
+    </div>
+  </dl>
+
+  <a class="action" href={pageHref(preset, content.next.href, direction)}>
+    {content.next.label}
+  </a>
+
+  {
+    Array.from({ length: sections }, (_, index) => (
+      <section class="block">
+        <h2>Section {index + 1}</h2>
+        <p>{content.body}</p>
+        <a class="action -secondary" href={pageHref(preset, content.next.href, direction)}>
+          {content.next.label}
+        </a>
+      </section>
+    ))
+  }
 </Layout>

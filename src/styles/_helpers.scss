@@ -1,5 +1,5 @@
 .view-transition-header {
-  view-transition-name: header;
+  view-transition-name: var(--view-transition-header-name, header);
 }
 
 .view-transition-site-header {
