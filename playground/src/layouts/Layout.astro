@@ -1,5 +1,6 @@
 ---
 import '../styles/playground.scss';
+import Info from '../components/Info.astro';
 import {
   directionLabel,
   directionsOf,
@@ -27,6 +28,9 @@ const bodyClass = [presetClass(preset, direction), variant && `-${variant}`]
   .filter(Boolean)
   .join(' ');
 
+// The page's own colours sit on `html`, where the transition can read them.
+const foreground = variant === 'hero' ? '#faf9f7' : '#181716';
+
 const nav = [
   { id: 'home' as const, label: 'Home' },
   { id: 'about' as const, label: 'About' },
@@ -36,19 +40,37 @@ const nav = [
 ];
 ---
 
-<html lang="en">
+<html lang="en" style={`--page-bg: ${tint}; --page-fg: ${foreground}`}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} · page transitions</title>
     <script is:inline>
-      document.documentElement.style.setProperty(
-        '--view-transition-feather',
-        sessionStorage.getItem('feather') || '0px',
-      );
+      // Panel settings live in sessionStorage, keyed by the variable they set.
+      // They reach the page as a stylesheet rule, the way a site would set
+      // them: as inline styles on `html` they arrive a frame late in the
+      // transition.
+      const transitionVars = document.createElement('style');
+      document.head.append(transitionVars);
+      window.applyTransitionVars = () => {
+        const declarations = Object.keys(sessionStorage)
+          .filter((name) => name.startsWith('--view-transition-'))
+          .map((name) => `${name}: ${sessionStorage.getItem(name)};`);
+        transitionVars.textContent = `:root:root { ${declarations.join(' ')} }`;
+      };
+      window.applyTransitionVars();
+      // The edge blur is a body class; add it before the page first renders.
+      if (sessionStorage.getItem('--view-transition-edge-blur')) {
+        new MutationObserver((_, observer) => {
+          if (document.body) {
+            document.body.classList.add('view-transition-edge-blur');
+            observer.disconnect();
+          }
+        }).observe(document.documentElement, { childList: true });
+      }
     </script>
   </head>
-  <body class={bodyClass} style={`--page-bg: ${tint}`}>
+  <body class={bodyClass}>
     <header class="site-header view-transition-site-header">
       <div class="bar">
         <a class="brand" href={pageHref(preset, 'home', direction)}>
@@ -76,8 +98,23 @@ const nav = [
             ))
           }
         </nav>
-        <label class="preset">
-          <span class="label">Preset</span>
+      </div>
+    </header>
+    <div class="page-header view-transition-header">
+      <p class="eyebrow">{presetInfo[preset].family} · {presetLabel(preset)}</p>
+      <h1>{title}</h1>
+    </div>
+    <main>
+      <slot />
+    </main>
+    <details class="panel" data-panel open>
+      <summary>Transition</summary>
+      <div class="fields">
+        <label>
+          <span class="name">
+            Preset
+            <Info text="Which animation plays between two pages." />
+          </span>
           <select data-navigate>
             {
               families.map((family) => (
@@ -99,8 +136,11 @@ const nav = [
         </label>
         {
           directionsOf(preset).length > 0 && (
-            <label class="preset">
-              <span class="label">Direction</span>
+            <label>
+              <span class="name">
+                Direction
+                <Info text="The edge the incoming page, or the reveal, starts from." />
+              </span>
               <select data-navigate>
                 {directionsOf(preset).map((item) => (
                   <option
@@ -116,34 +156,170 @@ const nav = [
         }
         {
           (preset === 'wipe' || preset === 'iris') && (
-            <label class="preset">
-              <span class="label">Edge</span>
-              <select data-feather>
-                <option value="0px">Hard</option>
+            <label>
+              <span class="name">
+                Edge
+                <Info text="How sharp the travelling edge is. A feathered edge fades over a distance and has no divider." />
+              </span>
+              <select data-var="--view-transition-feather">
+                <option value="">Hard</option>
                 <option value="12vmax">Feathered</option>
                 <option value="40vmax">Very soft</option>
               </select>
             </label>
           )
         }
+        {
+          preset === 'blur' && (
+            <label>
+              <span class="name">
+                Blur
+                <Info text="How strongly the pages are blurred as they leave and arrive." />
+              </span>
+              <select data-var="--view-transition-blur">
+                <option value="8px">8px</option>
+                <option value="">20px</option>
+                <option value="40px">40px</option>
+              </select>
+            </label>
+          )
+        }
+        {
+          ['slide', 'cover', 'wipe', 'iris', 'lines'].includes(preset) && (
+            <>
+              <label>
+                <span class="name">
+                  Divider
+                  <Info text="Thickness of a line drawn along the edge between the two pages." />
+                </span>
+                <span class="range">
+                  <input
+                    type="range"
+                    min="0"
+                    max="48"
+                    value="0"
+                    data-var="--view-transition-divider"
+                    data-unit="px"
+                  />
+                  <output>0px</output>
+                </span>
+              </label>
+              <label>
+                <span class="name">
+                  Line
+                  <Info text="Colour of the divider, taken from the page being opened." />
+                </span>
+                <select data-var="--view-transition-divider-color">
+                  <option value="">Text colour</option>
+                  <option value="var(--page-bg)">Background colour</option>
+                  <option value="var(--color-primary)">Accent colour</option>
+                </select>
+              </label>
+            </>
+          )
+        }
+        {
+          ['slide', 'cover', 'wipe', 'iris'].includes(preset) && (
+            <label>
+              <span class="name">
+                Edge blur
+                <Info text="Blurs both pages where they meet, strongest on the seam itself." />
+              </span>
+              <select data-var="--view-transition-edge-blur" data-edge-blur>
+                <option value="">Off</option>
+                <option value="4px">Light</option>
+                <option value="8px">Medium</option>
+                <option value="16px">Strong</option>
+              </select>
+            </label>
+          )
+        }
+        <label>
+          <span class="name">
+            Easing
+            <Info text="How the motion speeds up and slows down. Preset default keeps the curves each Preset ships with." />
+          </span>
+          <select data-var="--view-transition-ease">
+            <option value="">Preset default</option>
+            <option value="linear">Linear</option>
+            <option value="cubic-bezier(0.65, 0, 0.35, 1)">Cubic in-out</option>
+            <option value="cubic-bezier(0.75, 0, 0.25, 1)">Quart in-out</option>
+            <option value="cubic-bezier(0.83, 0, 0.17, 1)">Quint in-out</option>
+            <option value="cubic-bezier(0.85, 0, 0.15, 1)">Circ in-out</option>
+            <option value="cubic-bezier(0.33, 1, 0.68, 1)">Cubic out</option>
+            <option value="cubic-bezier(0.16, 1, 0.3, 1)">Expo out</option>
+            <option value="linear(0, 0.36 14%, 0.86 28%, 1.08 38%, 1.1 46%, 1.02 62%, 0.99 76%, 1)">
+              Spring, overshoot
+            </option>
+          </select>
+        </label>
+        <label>
+          <span class="name">
+            Duration
+            <Info text="The base length. Each Preset runs for a fixed multiple of it." />
+          </span>
+          <select data-var="--view-transition-duration">
+            <option value="0.3s">0.3s</option>
+            <option value="">0.6s</option>
+            <option value="1s">1s</option>
+            <option value="2s">2s</option>
+            <option value="5s">5s</option>
+          </select>
+        </label>
       </div>
-    </header>
-    <div class="page-header view-transition-header">
-      <p class="eyebrow">{presetInfo[preset].family} · {presetLabel(preset)}</p>
-      <h1>{title}</h1>
-    </div>
-    <main>
-      <slot />
-    </main>
+    </details>
     <script is:inline>
-      const feather = document.querySelector('[data-feather]');
+      const panel = document.querySelector('[data-panel]');
+      // Starts collapsed on narrow screens, where it would cover the page.
+      panel.open = sessionStorage.getItem('panel')
+        ? sessionStorage.getItem('panel') === 'open'
+        : matchMedia('(min-width: 48rem)').matches;
+      panel.addEventListener('toggle', () => {
+        sessionStorage.setItem('panel', panel.open ? 'open' : 'closed');
+      });
+      // An empty value, or a slider at its start, is the package default: the
+      // variable is left unset.
+      document.querySelectorAll('[data-var]').forEach((field) => {
+        const name = field.dataset.var;
+        const unit = field.dataset.unit ?? '';
+        const output = field.parentElement.querySelector('output');
+        const stored = sessionStorage.getItem(name);
+        field.value = stored ? (unit ? parseFloat(stored) : stored) : field.defaultValue ?? '';
+        const show = () => {
+          if (output) output.textContent = field.value + unit;
+        };
+        show();
+        field.addEventListener('input', () => {
+          show();
+          if (field.value && field.value !== field.min) {
+            sessionStorage.setItem(name, field.value + unit);
+          } else {
+            sessionStorage.removeItem(name);
+          }
+          window.applyTransitionVars();
+        });
+      });
+      // A feathered edge has no divider, so its controls go quiet.
+      const feather = document.querySelector(
+        '[data-var="--view-transition-feather"]',
+      );
       if (feather) {
-        feather.value = sessionStorage.getItem('feather') || '0px';
-        feather.addEventListener('change', () => {
-          sessionStorage.setItem('feather', feather.value);
-          document.documentElement.style.setProperty(
-            '--view-transition-feather',
-            feather.value,
+        const sync = () => {
+          document
+            .querySelectorAll('[data-var^="--view-transition-divider"]')
+            .forEach((field) => {
+              field.disabled = feather.value !== '';
+            });
+        };
+        feather.addEventListener('input', sync);
+        sync();
+      }
+      const edgeBlur = document.querySelector('[data-edge-blur]');
+      if (edgeBlur) {
+        edgeBlur.addEventListener('input', () => {
+          document.body.classList.toggle(
+            'view-transition-edge-blur',
+            edgeBlur.value !== '',
           );
         });
       }

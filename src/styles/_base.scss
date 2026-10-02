@@ -22,13 +22,17 @@
   --view-transition-duration: 0.6s;
   --view-transition-duration-fast: 0.3s;
   --view-transition-duration-slow: 1.2s;
-  --view-transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --view-transition-ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
   --view-transition-ease-in: cubic-bezier(0.5, 0, 1, 1);
   --view-transition-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --view-transition-ease-in-out: cubic-bezier(0.6, 0, 0.1, 1);
   --view-transition-backdrop: transparent;
   --view-transition-blur: 20px;
   --view-transition-feather: 0px;
+  --view-transition-divider: 0px;
+  --view-transition-divider-color: currentColor;
+  --view-transition-edge-blur: 8px;
+  --view-transition-edge-width: 30vmax;
 
   // The Preset bundle. These are fade; a Preset overrides what differs.
   --view-transition-old-name: fade-out;
@@ -37,17 +41,19 @@
   --view-transition-new-duration: var(--view-transition-duration);
   --view-transition-old-delay: 0s;
   --view-transition-new-delay: 0s;
-  --view-transition-old-ease: var(--view-transition-ease);
-  --view-transition-new-ease: var(--view-transition-ease);
+  --view-transition-preset-old-ease: var(--view-transition-ease-soft);
+  --view-transition-preset-new-ease: var(--view-transition-ease-soft);
   --view-transition-blend: plus-lighter;
   --view-transition-header-name: header;
   --view-transition-header-stagger: calc(var(--view-transition-duration) * 0.25);
 
   // Where slide, cover, wipe and lines start from. Set by
   // `view-transition-from-*`; slide defaults to the right instead.
-  --view-transition-from-x: 0%;
-  --view-transition-from-y: 100%;
+  // from-x and from-y are -1, 0 or 1: which way off screen the page starts.
+  --view-transition-from-x: 0;
+  --view-transition-from-y: 1;
   --view-transition-wipe-angle: 0deg;
   --view-transition-lines-x: 0%;
+  --view-transition-lines-angle: 90deg;
   --view-transition-lines-reverse: 0;
 }

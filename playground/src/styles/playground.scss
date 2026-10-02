@@ -48,7 +48,7 @@
   font-synthesis: none;
   line-height: 1.5;
   text-rendering: optimizeLegibility;
-  color: var(--color-foreground);
+  color: var(--page-fg, var(--color-foreground));
 }
 
 *,
@@ -73,6 +73,8 @@ a {
 }
 
 .site-header {
+  position: sticky;
+  top: 0;
   z-index: 1;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
@@ -87,16 +89,9 @@ a {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
     gap: 0.5rem 1.5rem;
     padding: 0.625rem var(--gutter);
-  }
-}
-
-// On narrow screens the bar wraps and would cover too much of the viewport.
-@media (min-width: 48rem) {
-  .site-header {
-    position: sticky;
-    top: 0;
   }
 }
 
@@ -117,7 +112,6 @@ a {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.25rem;
-  margin-right: auto;
 
   > a {
     padding: 0.25rem 0.75rem;
@@ -135,16 +129,116 @@ a {
   }
 }
 
-.site-header .preset {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
+// The controls float above the page and sit out of the transition, like the bar.
+.panel {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 2;
+  width: min(22rem, calc(100vw - 2rem));
+  view-transition-name: playground-panel;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0.5rem 2rem rgb(24 23 22 / 12%);
+  color: var(--color-foreground);
+  font-size: var(--text-sm);
 
-  > .label {
-    color: var(--color-muted-foreground);
+  > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-lg);
+    font-weight: 700;
+    list-style: none;
+    cursor: pointer;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::after {
+      content: '';
+      width: 1rem;
+      height: 1rem;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23181716' stroke-width='1.5'%3E%3Cpath d='m4 10 4-4 4 4'/%3E%3C/svg%3E")
+        center / contain no-repeat;
+      transition: transform 150ms;
+    }
   }
 
-  > select {
+  &[open] > summary::after {
+    transform: rotate(180deg);
+  }
+
+  > .fields {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  label {
+    position: relative;
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    align-items: center;
+    gap: 0.5rem;
+
+    > .name {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      color: var(--color-muted-foreground);
+    }
+  }
+
+  .info {
+    display: inline-flex;
+    border-radius: 50%;
+    cursor: help;
+
+    > svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-foreground);
+    }
+
+    // The tip spans the panel and sits above its row, so it never leaves the
+    // viewport from the bottom-right corner.
+    > .tip {
+      position: absolute;
+      right: 0;
+      bottom: calc(100% + 0.375rem);
+      left: 0;
+      z-index: 1;
+      padding: 0.625rem 0.75rem;
+      background: var(--color-foreground);
+      border-radius: var(--radius-sm);
+      color: var(--color-background);
+      line-height: 1.35;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition:
+        opacity 150ms,
+        visibility 150ms;
+    }
+
+    &:hover > .tip,
+    &:focus-visible > .tip {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  select {
+    min-width: 0;
     padding: 0.375rem 2.25rem 0.375rem 0.75rem;
     appearance: none;
     background: var(--color-surface)
@@ -154,6 +248,7 @@ a {
     border-radius: var(--radius-sm);
     color: inherit;
     font: inherit;
+    text-overflow: ellipsis;
     cursor: pointer;
     transition: background-color 150ms;
 
@@ -161,6 +256,43 @@ a {
       background-color: var(--color-hover);
     }
   }
+}
+
+.panel label:has(:disabled) {
+  opacity: 0.4;
+
+  select,
+  input {
+    cursor: not-allowed;
+  }
+}
+
+.panel .range {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  > input {
+    flex: 1;
+    min-width: 0;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  > output {
+    min-width: 3.5ch;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    text-align: right;
+  }
+}
+
+::view-transition-old(playground-panel) {
+  display: none;
+}
+
+::view-transition-new(playground-panel) {
+  animation: none;
 }
 
 .page-header {
@@ -276,8 +408,6 @@ main {
 
 // A dark, full-viewport header: the fixture for sites that open on a hero.
 body.-hero {
-  color: var(--color-background);
-
   .page-header {
     display: flex;
     flex-direction: column;

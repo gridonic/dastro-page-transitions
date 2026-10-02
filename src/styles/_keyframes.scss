@@ -52,8 +52,8 @@
 @keyframes slide-in {
   from {
     transform: translate(
-      var(--view-transition-from-x),
-      var(--view-transition-from-y)
+      calc(var(--view-transition-from-x) * 100%),
+      calc(var(--view-transition-from-y) * 100%)
     );
   }
   to {
@@ -67,8 +67,8 @@
   }
   to {
     transform: translate(
-      calc(var(--view-transition-from-x) * -1),
-      calc(var(--view-transition-from-y) * -1)
+      calc(var(--view-transition-from-x) * -100%),
+      calc(var(--view-transition-from-y) * -100%)
     );
   }
 }

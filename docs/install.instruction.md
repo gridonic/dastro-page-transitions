@@ -63,6 +63,16 @@ Slide, cover, wipe and lines start from an edge, their **Origin**. Add a second 
 | wipe | `bottom` | `top`, `right`, `bottom`, `left`: the edge the reveal starts from |
 | lines | `left` and `top` | `left` or `right`: the side each band starts from. `top` or `bottom`: the band that goes first. Takes one of each. |
 
+### Blurred seam (optional)
+
+Add `view-transition-edge-blur` to the body classes to blur the pages where they meet. It works with slide, cover, wipe and iris, and is strongest on the seam itself:
+
+```astro
+<LayoutBase bodyClass="ui-sticky-footer text-md view-transition-cover view-transition-edge-blur">
+```
+
+It uses `html::before`, `html::after` and `body::after` as its layers, so do not add it to a site that already uses those pseudo-elements. Tune it with `--view-transition-edge-blur` (default `8px`, the blur of each of the three layers) and `--view-transition-edge-width` (default `30vmax`, the width of the blurred band).
+
 `view-transition-slide-up` no longer exists; use `view-transition-slide view-transition-from-bottom`.
 
 Do not set a Sass `$preset`. These CSS variables on `:root` tune any Preset:
@@ -70,9 +80,13 @@ Do not set a Sass `$preset`. These CSS variables on `:root` tune any Preset:
 | Variable | Default | Effect |
 |---|---|---|
 | `--view-transition-duration` | `0.6s` | Base length. Every Preset's timings are fractions of it. |
+| `--view-transition-ease` | _(unset)_ | Easing for both pages, replacing the Preset's own curves. Any easing function works, including `linear()`. |
+| `--view-transition-old-ease`, `--view-transition-new-ease` | _(unset)_ | Easing for the outgoing or the incoming page only. Wins over `--view-transition-ease`. |
 | `--view-transition-backdrop` | `transparent` | Colour behind the pages, seen in the gap of `dip`, `rise` and `blur` and around the old page in `cover`. Transparent shows the incoming page's background. |
 | `--view-transition-blur` | `20px` | Blur radius of `blur`. |
-| `--view-transition-feather` | `0px` | Width the edge of `wipe` and `iris` fades over. `0px` is a hard edge; try `20vh`. |
+| `--view-transition-feather` | `0px` | Width the edge of `wipe` and `iris` fades over. `0px` is a hard edge; try `20vh`. A feathered edge has no divider. |
+| `--view-transition-divider` | `0px` | Width of a line along the edge between the pages in `slide`, `cover`, `wipe`, `iris` and `lines`. `0px` is no line. |
+| `--view-transition-divider-color` | `currentColor` | Colour of that line. |
 
 ---
 
