@@ -1,0 +1,4 @@
+# Deploys the playground as the preview site. The package itself is not built.
+[build]
+  command = "npm run build"
+  publish = "playground/dist"
