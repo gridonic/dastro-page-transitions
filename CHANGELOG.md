@@ -1,3 +1,7 @@
+### [0.3.2](https://github.com/gridonic/dastro-page-transitions/compare/v0.3.1...v0.3.2)
+
+- modularize presets to improve performance
+
 ### [0.3.1](https://github.com/gridonic/dastro-page-transitions/compare/v0.3.0...v0.3.1)
 
 - add new presets (split, flip and cutout)
