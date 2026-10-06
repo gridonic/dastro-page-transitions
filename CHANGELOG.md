@@ -1,3 +1,7 @@
+### [0.3.3](https://github.com/gridonic/dastro-page-transitions/compare/v0.3.2...v0.3.3)
+
+- added overview to detail page animations
+
 ### [0.3.2](https://github.com/gridonic/dastro-page-transitions/compare/v0.3.1...v0.3.2)
 
 - modularize presets to improve performance
