@@ -22,6 +22,8 @@ That ships every **Preset**. A site that only uses some can leave the rest out:
 
 Fade is the default. Pick another **Preset** with a class on `body`: `view-transition-rise`, `-dip`, `-blur`, `-slide`, `-flip`, `-cover`, `-wipe`, `-iris`, `-split`, `-cutout` or `-lines`. Slide, flip, cover, wipe, split and lines take an **Origin** as a second class: `view-transition-from-top`, `-right`, `-bottom` or `-left`. The **Frame** uses the existing classes `.view-transition-header` and `.view-transition-site-header`.
 
+Under fade, rise, dip and blur an overview can hand an article's image and heading over to the article's page. Mark them on both pages as **Shared elements**: the class `view-transition-shared-image` or `view-transition-shared`, and the same name in `--view-transition-shared-name`.
+
 ## Docs
 
 - [CONTEXT.md](./CONTEXT.md) — domain language

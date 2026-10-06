@@ -1,6 +1,6 @@
 # Page transitions
 
-Animated navigations between pages in a dastro/Astro site. This package enables them and supplies the shared *frame* and presets.
+Animated navigations between pages in a dastro/Astro site. This package enables them and supplies the *frame*, the presets and the *shared elements*.
 
 ## Language
 
@@ -28,6 +28,10 @@ A `view-transition-name` on the **Frame**. Projects attach it with the existing 
 The site-header and page header modules that carry **Named groups**.
 *Avoid*: chrome, layout, shell
 
+**Shared element**:
+An element that is on both pages of a **Page transition**, like an article's image on the overview and on the article's own page. It travels from its old place to its new one as its own **Named group** while the **Preset** swaps the rest. Marked on both pages with the class `view-transition-shared` (or `view-transition-shared-image`) and the same name in `--view-transition-shared-name`. Only under fade, rise, dip and blur.
+*Avoid*: calling it a Preset, morph, hero animation
+
 ## Relationships
 
 - A **Page transition** is a full page load that the browser animates as a **View Transition**
@@ -37,6 +41,8 @@ The site-header and page header modules that carry **Named groups**.
 - The stylesheet ships every **Preset** unless the site narrows it with Sass `$presets`. That decides what ships, not which **Preset** runs.
 - The **Frame** always uses the same classes; the **Preset** decides whether the page header is its own **Named group** or moves with the page, the site-header always persists
 - A **Preset**'s timings are fractions of `--view-transition-duration`, so a site scales any Preset with that one variable
+- **Shared elements** are not a **Preset** and do not replace it: they run on top of the Preset the site has
+- Every **Shared element** on a page is a **Named group** in every navigation. One without a counterpart on the other page replays the **Preset**, which only matches the page under fade, rise, dip and blur; under the other Presets nothing is shared
 - `prefers-reduced-motion` means no **Page transition** animation
 
 ## Example dialogue
@@ -56,3 +62,5 @@ The site-header and page header modules that carry **Named groups**.
 - Back-button reverse — resolved: never reverse. **Direction** is not a term; the fixed edge a Preset starts from is its **Origin**.
 - `slide-up` as its own Preset — resolved: removed. It is slide with the **Origin** bottom. Preset motion will be iterated; names are the catalog, not the keyframes.
 - "Chrome" collided with the browser — resolved: the site-header and page header are the **Frame**.
+- "Is overview-to-detail a new Preset?" — resolved: no. A **Preset** is how the page is swapped; a **Shared element** is one element crossing that swap.
+- A script that names only the clicked article's elements — resolved: out. The package stays CSS-only; the price is that **Shared elements** are limited to the fade Presets.

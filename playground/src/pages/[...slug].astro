@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { copy } from '../lib/copy';
 import {
+  articles,
   pageHref,
   presetClass,
   presetInfo,
@@ -24,6 +25,8 @@ const { preset, page, direction } = Astro.props;
 const content = copy[page];
 const info = presetInfo[preset];
 const sections = content.variant === 'long' ? 6 : 0;
+// Article pages are `work/<article>`; the article names its Shared elements.
+const article = content.image && page.split('/')[1];
 ---
 
 <Layout
@@ -33,8 +36,49 @@ const sections = content.variant === 'long' ? 6 : 0;
   page={page}
   direction={direction}
   variant={content.variant}
+  sharedTitle={article ? `${article}-title` : undefined}
 >
+  {
+    content.image && (
+      <img
+        class="figure view-transition-shared-image"
+        style={`--view-transition-shared-name: ${article}-image`}
+        src={content.image}
+        alt=""
+        width="1600"
+        height="1200"
+      />
+    )
+  }
+
   <p class="lead">{content.body}</p>
+
+  {
+    page === 'work' && (
+      <ul class="cards">
+        {articles.map((article) => (
+          <li>
+            <a class="card" href={pageHref(preset, `work/${article}`, direction)}>
+              <img
+                class="view-transition-shared-image"
+                style={`--view-transition-shared-name: ${article}-image`}
+                src={copy[`work/${article}`].image}
+                alt=""
+                width="1600"
+                height="1200"
+              />
+              <h2
+                class="view-transition-shared"
+                style={`--view-transition-shared-name: ${article}-title`}
+              >
+                {copy[`work/${article}`].title}
+              </h2>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
 
   <dl class="facts">
     <div>

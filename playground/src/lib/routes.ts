@@ -12,7 +12,15 @@ export const presets = [
   'cutout',
   'lines',
 ] as const;
-export const pages = ['home', 'about', 'work', 'long', 'hero'] as const;
+export const articles = ['harbour', 'ridge', 'tide', 'ember'] as const;
+export const pages = [
+  'home',
+  'about',
+  'work',
+  'long',
+  'hero',
+  ...articles.map((article) => `work/${article}` as const),
+];
 
 export type PresetId = (typeof presets)[number];
 export type PageId = (typeof pages)[number];

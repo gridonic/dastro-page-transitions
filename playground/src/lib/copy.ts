@@ -1,15 +1,36 @@
-import type { PageId } from './routes';
+import { articles, type PageId } from './routes';
 
-export const copy: Record<
-  PageId,
-  {
-    title: string;
-    tint: string;
-    body: string;
-    next: { href: PageId; label: string };
-    variant?: 'long' | 'hero';
-  }
-> = {
+interface Entry {
+  title: string;
+  tint: string;
+  body: string;
+  next: { href: PageId; label: string };
+  variant?: 'long' | 'hero';
+  image?: string;
+}
+
+const articleTitles: Record<(typeof articles)[number], [string, string]> = {
+  harbour: ['Harbour light', '#e8f1ff'],
+  ridge: ['Ridge line', '#e8f7ed'],
+  tide: ['Low tide', '#f1eefb'],
+  ember: ['Ember season', '#fff0e6'],
+};
+
+// Every article page: the image and the heading are on the overview too.
+const articleCopy = Object.fromEntries(
+  articles.map((article) => [
+    `work/${article}`,
+    {
+      title: articleTitles[article][0],
+      tint: articleTitles[article][1],
+      body: 'An article page. Under Fade, Rise, Dip and Blur its image and heading come from the card on the overview, and return to it when you go back.',
+      next: { href: 'work', label: 'All work' },
+      image: `/work/${article}.svg`,
+    },
+  ]),
+) as Record<`work/${(typeof articles)[number]}`, Entry>;
+
+export const copy: Record<PageId, Entry> = {
   home: {
     title: 'Page transitions',
     tint: '#faf9f7',
@@ -25,7 +46,7 @@ export const copy: Record<
   work: {
     title: 'Selected work',
     tint: '#e8f7ed',
-    body: 'Header modules use view-transition-header. The site bar uses view-transition-site-header and does not animate.',
+    body: 'An overview. Under Fade, Rise, Dip and Blur an article’s image and heading are Shared elements: open one and they travel to their place on the article page.',
     next: { href: 'long', label: 'A long page' },
   },
   long: {
@@ -42,4 +63,5 @@ export const copy: Record<
     next: { href: 'home', label: 'Back home' },
     variant: 'hero',
   },
+  ...articleCopy,
 };

@@ -14,6 +14,8 @@ $all-presets: fade, rise, dip, blur, slide, flip, cover, wipe, iris, split, cuto
 $presets: $all-presets !default;
 // Whether to ship the blurred seam behind `view-transition-edge-blur`.
 $edge-blur: true !default;
+// Whether to ship Shared elements, the `view-transition-shared` classes.
+$shared-elements: true !default;
 // lines: how many bands the page is cut into.
 $lines-bands: 24 !default;
 // lines: share of the progress spent starting the bands; the rest is one

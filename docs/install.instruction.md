@@ -43,6 +43,7 @@ The import above contains every Preset, about 55 KB of CSS before minification. 
 |---|---|---|
 | `$presets` | every Preset | The Presets to ship: one name or a list, `(slide, cover)`. Fade always ships. |
 | `$edge-blur` | `true` | Whether to ship the [blurred seam](#blurred-seam-optional). Set it to `false` unless the site uses `view-transition-edge-blur`. |
+| `$shared-elements` | `true` | Whether to ship [Shared elements](#6-shared-elements-optional). Set it to `false` unless the site uses the `view-transition-shared` classes. |
 | `$lines-bands` | `24` | How many bands `lines` cuts the page into. Fewer bands is less CSS. |
 | `$lines-sweep` | `0.55` | Share of `lines` spent starting the bands; the rest is one band's wipe. |
 
@@ -144,3 +145,60 @@ The **Preset** decides what `.view-transition-header` does: under fade, rise, di
 ## 5. Check reduced motion
 
 `prefers-reduced-motion` skips the at-rule, so those users get a normal full page load. You do not need a project-level override.
+
+---
+
+## 6. Shared elements (optional)
+
+On an overview that links to detail pages, the image and the heading of an article can travel from the card to their place on the article's page, and back again. These are **Shared elements**. They run on top of the Preset: the Preset swaps the page, the Shared elements cross over.
+
+They only work under `fade`, `rise`, `dip` and `blur`. Under the other Presets the classes do nothing.
+
+Give the element a class and a name, the same on both pages. The name has to be unique per article and element, so build it from the article's id or slug:
+
+```astro
+<!-- overview -->
+<a href={`/articles/${article.slug}/`}>
+  <img
+    class="view-transition-shared-image"
+    style={`--view-transition-shared-name: article-${article.id}-image`}
+    src="…"
+    alt=""
+  />
+  <h2
+    class="view-transition-shared"
+    style={`--view-transition-shared-name: article-${article.id}-title`}
+  >
+    {article.title}
+  </h2>
+</a>
+
+<!-- the article's page -->
+<h1
+  class="view-transition-shared"
+  style={`--view-transition-shared-name: article-${article.id}-title`}
+>
+  {article.title}
+</h1>
+<img
+  class="view-transition-shared-image"
+  style={`--view-transition-shared-name: article-${article.id}-image`}
+  src="…"
+  alt=""
+/>
+```
+
+| Class | Use it on |
+|---|---|
+| `view-transition-shared-image` | Images. Cropped like `object-fit: cover` while it travels, so the two pages can show it in different formats. |
+| `view-transition-shared` | Anything else, like the heading. A heading travels best when its box is as wide as its text (`width: fit-content`). |
+
+- A name must not appear twice on one page. If an overview shows the same article in two places, only give one of them the name; otherwise the browser skips the whole transition.
+- The name is a CSS identifier: letters, digits and hyphens, not starting with a digit.
+- Every Shared element on a page is its own layer in every navigation, also when the other page has no counterpart. It then leaves or arrives the way its page does.
+- During a transition the cards of the page being opened are stacked above that page. `.view-transition-site-header` stays on top of them. Anything else that is fixed and has its own `view-transition-name` needs a `z-index` on its `::view-transition-group()`.
+
+| Variable | Default | Effect |
+|---|---|---|
+| `--view-transition-shared-duration` | the Preset's length | How long a Shared element travels. By default it lands when the new page has arrived. |
+| `--view-transition-shared-ease` | `cubic-bezier(0.6, 0, 0.1, 1)` | Easing of the travel. |

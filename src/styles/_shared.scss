@@ -1,0 +1,96 @@
+@use 'sass:list';
+@use 'config';
+
+// Shared elements: an element that is on both pages, like an article's image
+// on the overview and on the article's own page, travels from its old place to
+// its new one instead of arriving with the page.
+//
+// The site gives the two the same name in `--view-transition-shared-name`,
+// one name per article and element. Every card on an overview is therefore
+// its own group in every navigation, with or without a counterpart.
+@if config.$shared-elements {
+  .view-transition-shared,
+  .view-transition-shared-image {
+    view-transition-name: var(--view-transition-shared-name, none);
+    view-transition-class: shared;
+  }
+
+  .view-transition-shared-image {
+    view-transition-class: shared shared-image;
+  }
+
+  // A group without a counterpart can only replay the Preset on its own. That
+  // matches the page where the Preset is a fade. Where the page moves as one
+  // surface it would come loose from it, so there nothing is shared.
+  $surface: config.classes(slide, flip, cover, wipe, iris, split, cutout, lines);
+
+  @if list.length($surface) > 0 {
+    html:has(body:is(#{$surface})) :is(.view-transition-shared, .view-transition-shared-image) {
+      view-transition-name: none;
+    }
+  }
+
+  // Groups that only the new page has are stacked last, above everything the
+  // old page had. The site-header stays on top of them.
+  ::view-transition-group(site-header) {
+    z-index: 1;
+  }
+
+  // The box moves and resizes from the old element to the new one. This is the
+  // browser's own group animation, which `_base` turns off for every other
+  // group.
+  ::view-transition-group(*.shared) {
+    animation: revert;
+    animation-duration: var(--view-transition-shared-duration);
+    animation-timing-function: var(--view-transition-shared-ease);
+  }
+
+  // Inside the box the old element cross-fades to the new one.
+  ::view-transition-old(*.shared),
+  ::view-transition-new(*.shared) {
+    animation-duration: var(--view-transition-shared-duration);
+    animation-timing-function: var(--view-transition-shared-ease);
+    animation-delay: 0s;
+    mix-blend-mode: plus-lighter;
+  }
+
+  ::view-transition-old(*.shared) {
+    animation-name: fade-out;
+  }
+
+  ::view-transition-new(*.shared) {
+    animation-name: fade-in;
+  }
+
+  // An image fills the box at every size, cropped like `object-fit: cover`, so
+  // it keeps its proportions when the two pages show it in different formats.
+  ::view-transition-old(*.shared-image),
+  ::view-transition-new(*.shared-image) {
+    height: 100%;
+    object-fit: cover;
+    overflow: clip;
+  }
+
+  // Without a counterpart the element leaves or arrives the way its page does.
+  ::view-transition-old(*.shared):only-child {
+    animation-name: var(--view-transition-old-name);
+    animation-duration: var(--view-transition-old-duration);
+    animation-timing-function: var(
+      --view-transition-old-ease,
+      var(--view-transition-ease, var(--view-transition-preset-old-ease))
+    );
+    animation-delay: var(--view-transition-old-delay);
+    mix-blend-mode: var(--view-transition-blend);
+  }
+
+  ::view-transition-new(*.shared):only-child {
+    animation-name: var(--view-transition-new-name);
+    animation-duration: var(--view-transition-new-duration);
+    animation-timing-function: var(
+      --view-transition-new-ease,
+      var(--view-transition-ease, var(--view-transition-preset-new-ease))
+    );
+    animation-delay: var(--view-transition-new-delay);
+    mix-blend-mode: var(--view-transition-blend);
+  }
+}

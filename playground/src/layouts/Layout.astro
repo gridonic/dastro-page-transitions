@@ -22,9 +22,11 @@ interface Props {
   page: PageId;
   direction?: string;
   variant?: 'long' | 'hero';
+  // The name the heading shares with its card on the overview.
+  sharedTitle?: string;
 }
 
-const { title, tint, preset, page, direction, variant } = Astro.props;
+const { title, tint, preset, page, direction, variant, sharedTitle } = Astro.props;
 const bodyClass = [presetClass(preset, direction), variant && `-${variant}`]
   .filter(Boolean)
   .join(' ');
@@ -129,7 +131,7 @@ const nav = [
             nav.map((item) => (
               <a
                 href={pageHref(preset, item.id, direction)}
-                aria-current={page === item.id ? 'page' : undefined}
+                aria-current={page.split('/')[0] === item.id ? 'page' : undefined}
               >
                 {item.label}
               </a>
@@ -140,7 +142,12 @@ const nav = [
     </header>
     <div class="page-header view-transition-header">
       <p class="eyebrow">{presetInfo[preset].family} · {presetLabel(preset)}</p>
-      <h1>{title}</h1>
+      <h1
+        class:list={{ 'view-transition-shared': sharedTitle }}
+        style={sharedTitle && `--view-transition-shared-name: ${sharedTitle}`}
+      >
+        {title}
+      </h1>
     </div>
     <main>
       <slot />

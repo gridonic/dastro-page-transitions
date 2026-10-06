@@ -58,6 +58,15 @@
     --view-transition-edge-width: 30vmax;
   }
 
+  // A Shared element travels for as long as the Preset takes to bring the new
+  // page in.
+  @if config.$shared-elements {
+    --view-transition-shared-duration: calc(
+      var(--view-transition-new-delay) + var(--view-transition-new-duration)
+    );
+    --view-transition-shared-ease: var(--view-transition-ease-in-out);
+  }
+
   // The Preset bundle. These are fade; a Preset overrides what differs.
   --view-transition-old-name: fade-out;
   --view-transition-new-name: fade-in;

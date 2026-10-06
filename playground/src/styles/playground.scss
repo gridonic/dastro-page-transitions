@@ -280,6 +280,11 @@ a {
   }
 }
 
+// Above the cards an overview brings in as groups of their own.
+::view-transition-group(playground-panel) {
+  z-index: 2;
+}
+
 ::view-transition-old(playground-panel) {
   display: none;
 }
@@ -299,6 +304,7 @@ a {
 
   > h1 {
     margin: 0;
+    width: fit-content;
     max-width: 14ch;
     font-size: var(--text-2xl);
     font-weight: 700;
@@ -316,6 +322,51 @@ main {
     font-size: var(--text-lg);
     line-height: 1.35;
   }
+}
+
+// The overview and its article pages: the fixture for Shared elements. The
+// image is 4:3 on a card and a wide strip on the article page.
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 1.5rem;
+  max-width: 64rem;
+  margin: 0 0 2.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: block;
+  text-decoration: none;
+
+  > img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+  }
+
+  > h2 {
+    width: fit-content;
+    margin: 0.75rem 0 0;
+    font-size: var(--text-lg);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+}
+
+main > .figure {
+  display: block;
+  width: 100%;
+  max-width: 64rem;
+  height: auto;
+  aspect-ratio: 21 / 9;
+  margin: 0 0 2.5rem;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
 }
 
 .facts {
