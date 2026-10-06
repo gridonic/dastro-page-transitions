@@ -1,0 +1,57 @@
+@use 'sass:list';
+
+// What the stylesheet contains. Everything by default; a site that has settled
+// on its Preset narrows it down:
+//
+//   @use 'dastro-page-transitions/styles' with ($presets: slide, $edge-blur: false);
+//
+// The Preset itself is still picked with a body class. This only decides which
+// Presets that class can pick from.
+$all-presets: fade, rise, dip, blur, slide, flip, cover, wipe, iris, split, cutout, lines;
+
+// The Presets to ship, one name or a list. fade is the fallback and always
+// ships.
+$presets: $all-presets !default;
+// Whether to ship the blurred seam behind `view-transition-edge-blur`.
+$edge-blur: true !default;
+// lines: how many bands the page is cut into.
+$lines-bands: 24 !default;
+// lines: share of the progress spent starting the bands; the rest is one
+// band's wipe.
+$lines-sweep: 0.55 !default;
+
+@each $preset in $presets {
+  @if not list.index($all-presets, $preset) {
+    @error 'Unknown Preset "#{$preset}". Expected one of: #{$all-presets}.';
+  }
+}
+
+// Whether any of the given Presets ships.
+@function has($names...) {
+  @each $name in $names {
+    @if list.index($presets, $name) {
+      @return true;
+    }
+  }
+
+  @return false;
+}
+
+// The body classes of those of the given Presets that ship, as a selector list.
+@function classes($names...) {
+  $classes: ();
+
+  @each $name in $names {
+    @if has($name) {
+      $classes: list.append($classes, '.view-transition-#{$name}', comma);
+    }
+  }
+
+  @return $classes;
+}
+
+// The seam only exists for these Presets.
+$edge: $edge-blur and has(slide, cover, wipe, iris);
+// Presets whose mask is driven by `--view-transition-progress`.
+$reveal: has(wipe, iris, split, cutout, lines);
+$wipe-angle: has(wipe) or $edge;

@@ -1,179 +1,213 @@
 @use 'sass:list';
 @use 'sass:math';
+@use 'config';
 
 // A Preset is a bundle of custom properties on `html`, picked by a body class.
 // Timings are fractions of `--view-transition-duration`, so a site can still
 // speed up or slow down any Preset with that one variable.
 
-html:has(body.view-transition-rise) {
-  --view-transition-old-name: rise-out;
-  --view-transition-new-name: rise-in;
-  --view-transition-old-duration: calc(var(--view-transition-duration) * 0.4);
-  --view-transition-new-duration: calc(var(--view-transition-duration) * 0.8);
-  --view-transition-new-delay: calc(var(--view-transition-duration) * 0.3);
-  --view-transition-preset-old-ease: var(--view-transition-ease-in);
-  --view-transition-preset-new-ease: var(--view-transition-ease-out);
+@if config.has(rise) {
+  html:has(body.view-transition-rise) {
+    --view-transition-old-name: rise-out;
+    --view-transition-new-name: rise-in;
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 0.4);
+    --view-transition-new-duration: calc(var(--view-transition-duration) * 0.8);
+    --view-transition-new-delay: calc(var(--view-transition-duration) * 0.3);
+    --view-transition-preset-old-ease: var(--view-transition-ease-in);
+    --view-transition-preset-new-ease: var(--view-transition-ease-out);
+  }
 }
 
-html:has(body.view-transition-dip) {
-  --view-transition-old-duration: calc(var(--view-transition-duration) * 0.45);
-  --view-transition-new-duration: calc(var(--view-transition-duration) * 0.6);
-  --view-transition-new-delay: calc(var(--view-transition-duration) * 0.6);
-  --view-transition-preset-old-ease: var(--view-transition-ease-in);
-  --view-transition-preset-new-ease: var(--view-transition-ease-out);
+@if config.has(dip) {
+  html:has(body.view-transition-dip) {
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 0.45);
+    --view-transition-new-duration: calc(var(--view-transition-duration) * 0.6);
+    --view-transition-new-delay: calc(var(--view-transition-duration) * 0.6);
+    --view-transition-preset-old-ease: var(--view-transition-ease-in);
+    --view-transition-preset-new-ease: var(--view-transition-ease-out);
+  }
 }
 
-html:has(body.view-transition-blur) {
-  --view-transition-old-name: blur-out;
-  --view-transition-new-name: blur-in;
-  --view-transition-old-duration: calc(var(--view-transition-duration) * 0.5);
-  --view-transition-new-duration: calc(var(--view-transition-duration) * 1.1);
-  --view-transition-new-delay: calc(var(--view-transition-duration) * 0.35);
-  --view-transition-preset-old-ease: var(--view-transition-ease-in);
-  --view-transition-preset-new-ease: var(--view-transition-ease-out);
+@if config.has(blur) {
+  html:has(body.view-transition-blur) {
+    --view-transition-old-name: blur-out;
+    --view-transition-new-name: blur-in;
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 0.5);
+    --view-transition-new-duration: calc(var(--view-transition-duration) * 1.1);
+    --view-transition-new-delay: calc(var(--view-transition-duration) * 0.35);
+    --view-transition-preset-old-ease: var(--view-transition-ease-in);
+    --view-transition-preset-new-ease: var(--view-transition-ease-out);
+  }
 }
 
-html:has(body.view-transition-slide) {
-  --view-transition-from-x: 1;
-  --view-transition-from-y: 0;
-  --view-transition-wipe-angle: 270deg;
-  --view-transition-old-name: slide-out;
-  --view-transition-new-name: slide-in;
-  --view-transition-old-duration: calc(var(--view-transition-duration) * 1.2);
-  --view-transition-new-duration: calc(var(--view-transition-duration) * 1.2);
-  --view-transition-preset-old-ease: var(--view-transition-ease-in-out);
-  --view-transition-preset-new-ease: var(--view-transition-ease-in-out);
-  --view-transition-blend: normal;
-  --view-transition-header-name: none;
+@if config.has(slide) {
+  html:has(body.view-transition-slide) {
+    --view-transition-from-x: 1;
+    --view-transition-from-y: 0;
+
+    @if config.$wipe-angle {
+      --view-transition-wipe-angle: 270deg;
+    }
+
+    --view-transition-old-name: slide-out;
+    --view-transition-new-name: slide-in;
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 1.2);
+    --view-transition-new-duration: calc(var(--view-transition-duration) * 1.2);
+    --view-transition-preset-old-ease: var(--view-transition-ease-in-out);
+    --view-transition-preset-new-ease: var(--view-transition-ease-in-out);
+    --view-transition-blend: normal;
+    --view-transition-header-name: none;
+  }
 }
 
-html:has(body.view-transition-flip) {
-  --view-transition-from-x: 1;
-  --view-transition-from-y: 0;
-  --view-transition-old-name: flip-out;
-  --view-transition-new-name: flip-in;
-  --view-transition-old-duration: calc(var(--view-transition-duration) * 0.6);
-  --view-transition-new-duration: calc(var(--view-transition-duration) * 0.6);
-  --view-transition-new-delay: calc(var(--view-transition-duration) * 0.6);
-  --view-transition-preset-old-ease: cubic-bezier(0.5, 0, 1, 0.6);
-  --view-transition-preset-new-ease: cubic-bezier(0, 0.4, 0.5, 1);
-  --view-transition-blend: normal;
-  --view-transition-header-name: none;
+@if config.has(flip) {
+  html:has(body.view-transition-flip) {
+    --view-transition-from-x: 1;
+    --view-transition-from-y: 0;
+    --view-transition-old-name: flip-out;
+    --view-transition-new-name: flip-in;
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 0.6);
+    --view-transition-new-duration: calc(var(--view-transition-duration) * 0.6);
+    --view-transition-new-delay: calc(var(--view-transition-duration) * 0.6);
+    --view-transition-preset-old-ease: cubic-bezier(0.5, 0, 1, 0.6);
+    --view-transition-preset-new-ease: cubic-bezier(0, 0.4, 0.5, 1);
+    --view-transition-blend: normal;
+    --view-transition-header-name: none;
+  }
 }
 
-html:has(body.view-transition-cover) {
-  --view-transition-old-name: cover-out;
-  --view-transition-new-name: slide-in;
-  --view-transition-old-duration: calc(var(--view-transition-duration) * 1.2);
-  --view-transition-new-duration: calc(var(--view-transition-duration) * 1.2);
-  --view-transition-preset-old-ease: var(--view-transition-ease-in-out);
-  --view-transition-preset-new-ease: var(--view-transition-ease-in-out);
-  --view-transition-blend: normal;
-  --view-transition-header-name: none;
+@if config.has(cover) {
+  html:has(body.view-transition-cover) {
+    --view-transition-old-name: cover-out;
+    --view-transition-new-name: slide-in;
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 1.2);
+    --view-transition-new-duration: calc(var(--view-transition-duration) * 1.2);
+    --view-transition-preset-old-ease: var(--view-transition-ease-in-out);
+    --view-transition-preset-new-ease: var(--view-transition-ease-in-out);
+    --view-transition-blend: normal;
+    --view-transition-header-name: none;
+  }
 }
 
-html:has(body.view-transition-wipe) {
-  --view-transition-old-name: reveal;
-  --view-transition-new-name: reveal;
-  --view-transition-old-duration: calc(var(--view-transition-duration) * 1.2);
-  --view-transition-new-duration: calc(var(--view-transition-duration) * 1.2);
-  --view-transition-preset-new-ease: var(--view-transition-ease-in-out);
-  --view-transition-blend: normal;
-  --view-transition-header-name: none;
+@if config.has(wipe) {
+  html:has(body.view-transition-wipe) {
+    --view-transition-old-name: reveal;
+    --view-transition-new-name: reveal;
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 1.2);
+    --view-transition-new-duration: calc(var(--view-transition-duration) * 1.2);
+    --view-transition-preset-new-ease: var(--view-transition-ease-in-out);
+    --view-transition-blend: normal;
+    --view-transition-header-name: none;
+  }
 }
 
-html:has(body.view-transition-iris) {
-  --view-transition-old-name: reveal;
-  --view-transition-new-name: reveal;
-  --view-transition-old-duration: calc(var(--view-transition-duration) * 1.3);
-  --view-transition-new-duration: calc(var(--view-transition-duration) * 1.3);
-  --view-transition-preset-new-ease: var(--view-transition-ease-in-out);
-  --view-transition-blend: normal;
-  --view-transition-header-name: none;
+@if config.has(iris) {
+  html:has(body.view-transition-iris) {
+    --view-transition-old-name: reveal;
+    --view-transition-new-name: reveal;
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 1.3);
+    --view-transition-new-duration: calc(var(--view-transition-duration) * 1.3);
+    --view-transition-preset-new-ease: var(--view-transition-ease-in-out);
+    --view-transition-blend: normal;
+    --view-transition-header-name: none;
+  }
 }
 
-html:has(body.view-transition-split) {
-  --view-transition-old-name: reveal;
-  --view-transition-new-name: reveal;
-  --view-transition-old-duration: calc(var(--view-transition-duration) * 1.2);
-  --view-transition-new-duration: calc(var(--view-transition-duration) * 1.2);
-  --view-transition-preset-new-ease: var(--view-transition-ease-in-out);
-  --view-transition-blend: normal;
-  --view-transition-header-name: none;
+@if config.has(split) {
+  html:has(body.view-transition-split) {
+    --view-transition-old-name: reveal;
+    --view-transition-new-name: reveal;
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 1.2);
+    --view-transition-new-duration: calc(var(--view-transition-duration) * 1.2);
+    --view-transition-preset-new-ease: var(--view-transition-ease-in-out);
+    --view-transition-blend: normal;
+    --view-transition-header-name: none;
+  }
 }
 
-html:has(body.view-transition-cutout) {
-  --view-transition-old-name: reveal;
-  --view-transition-new-name: reveal;
-  --view-transition-old-duration: calc(var(--view-transition-duration) * 1.6);
-  --view-transition-new-duration: calc(var(--view-transition-duration) * 1.6);
-  --view-transition-preset-new-ease: var(--view-transition-ease-soft);
-  --view-transition-blend: normal;
-  --view-transition-header-name: none;
+@if config.has(cutout) {
+  html:has(body.view-transition-cutout) {
+    --view-transition-old-name: reveal;
+    --view-transition-new-name: reveal;
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 1.6);
+    --view-transition-new-duration: calc(var(--view-transition-duration) * 1.6);
+    --view-transition-preset-new-ease: var(--view-transition-ease-soft);
+    --view-transition-blend: normal;
+    --view-transition-header-name: none;
+  }
 }
 
-html:has(body.view-transition-lines) {
-  --view-transition-old-name: reveal;
-  --view-transition-new-name: reveal;
-  --view-transition-old-duration: calc(var(--view-transition-duration) * 1.6);
-  --view-transition-new-duration: calc(var(--view-transition-duration) * 1.6);
-  --view-transition-preset-new-ease: var(--view-transition-ease-soft);
-  --view-transition-blend: normal;
-  --view-transition-header-name: none;
+@if config.has(lines) {
+  html:has(body.view-transition-lines) {
+    --view-transition-old-name: reveal;
+    --view-transition-new-name: reveal;
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 1.6);
+    --view-transition-new-duration: calc(var(--view-transition-duration) * 1.6);
+    --view-transition-preset-new-ease: var(--view-transition-ease-soft);
+    --view-transition-blend: normal;
+    --view-transition-header-name: none;
+  }
 }
 
 // The edge slide, cover and wipe start from. For split, left/right opens it
 // sideways and top/bottom opens it up and down. For lines, left/right is the side each
 // band wipes in from and top/bottom is the band that goes first, so it takes
 // one class of each pair.
+@mixin origin($x, $y, $angle) {
+  @if config.has(split) {
+    @if $x == 0 {
+      --view-transition-split-size: 100% calc(50% + 1px);
+      --view-transition-split-a: to top;
+      --view-transition-split-b: to bottom;
+      --view-transition-split-a-at: top;
+      --view-transition-split-b-at: bottom;
+    } @else {
+      --view-transition-split-size: calc(50% + 1px) 100%;
+      --view-transition-split-a: to left;
+      --view-transition-split-b: to right;
+      --view-transition-split-a-at: left;
+      --view-transition-split-b-at: right;
+    }
+  }
+
+  @if config.has(slide, flip, cover) {
+    --view-transition-from-x: #{$x};
+    --view-transition-from-y: #{$y};
+  }
+
+  @if config.$wipe-angle {
+    --view-transition-wipe-angle: #{$angle};
+  }
+
+  @if config.has(lines) {
+    @if $y == 1 {
+      --view-transition-lines-reverse: 1;
+    } @else if $y == -1 {
+      --view-transition-lines-reverse: 0;
+    } @else if $x == 1 {
+      --view-transition-lines-x: 100%;
+      --view-transition-lines-angle: #{$angle};
+    } @else {
+      --view-transition-lines-x: 0%;
+      --view-transition-lines-angle: #{$angle};
+    }
+  }
+}
+
 html:has(body.view-transition-from-top) {
-  --view-transition-split-size: 100% calc(50% + 1px);
-  --view-transition-split-a: to top;
-  --view-transition-split-b: to bottom;
-  --view-transition-split-a-at: top;
-  --view-transition-split-b-at: bottom;
-  --view-transition-from-x: 0;
-  --view-transition-from-y: -1;
-  --view-transition-wipe-angle: 180deg;
-  --view-transition-lines-reverse: 0;
+  @include origin(0, -1, 180deg);
 }
 
 html:has(body.view-transition-from-bottom) {
-  --view-transition-split-size: 100% calc(50% + 1px);
-  --view-transition-split-a: to top;
-  --view-transition-split-b: to bottom;
-  --view-transition-split-a-at: top;
-  --view-transition-split-b-at: bottom;
-  --view-transition-from-x: 0;
-  --view-transition-from-y: 1;
-  --view-transition-wipe-angle: 0deg;
-  --view-transition-lines-reverse: 1;
+  @include origin(0, 1, 0deg);
 }
 
 html:has(body.view-transition-from-left) {
-  --view-transition-split-size: calc(50% + 1px) 100%;
-  --view-transition-split-a: to left;
-  --view-transition-split-b: to right;
-  --view-transition-split-a-at: left;
-  --view-transition-split-b-at: right;
-  --view-transition-from-x: -1;
-  --view-transition-from-y: 0;
-  --view-transition-wipe-angle: 90deg;
-  --view-transition-lines-x: 0%;
-  --view-transition-lines-angle: 90deg;
+  @include origin(-1, 0, 90deg);
 }
 
 html:has(body.view-transition-from-right) {
-  --view-transition-split-size: calc(50% + 1px) 100%;
-  --view-transition-split-a: to left;
-  --view-transition-split-b: to right;
-  --view-transition-split-a-at: left;
-  --view-transition-split-b-at: right;
-  --view-transition-from-x: 1;
-  --view-transition-from-y: 0;
-  --view-transition-wipe-angle: 270deg;
-  --view-transition-lines-x: 100%;
-  --view-transition-lines-angle: 270deg;
+  @include origin(1, 0, 270deg);
 }
 
 ::view-transition-old(*),
@@ -227,44 +261,50 @@ $reveal-new: #000 calc(#{$reveal-gap} - var(--view-transition-feather)),
 $reveal-old: #000 $reveal-gap, transparent $reveal-gap, transparent $reveal-lead,
   #000 $reveal-lead;
 
-html:has(body.view-transition-wipe)::view-transition-new(root) {
-  mask-image: linear-gradient(var(--view-transition-wipe-angle), $reveal-new);
+@if config.has(wipe) {
+  html:has(body.view-transition-wipe)::view-transition-new(root) {
+    mask-image: linear-gradient(var(--view-transition-wipe-angle), $reveal-new);
+  }
+
+  html:has(body.view-transition-wipe)::view-transition-old(root) {
+    mask-image: linear-gradient(var(--view-transition-wipe-angle), $reveal-old);
+  }
 }
 
-html:has(body.view-transition-wipe)::view-transition-old(root) {
-  mask-image: linear-gradient(var(--view-transition-wipe-angle), $reveal-old);
-}
+@if config.has(iris) {
+  html:has(body.view-transition-iris)::view-transition-new(root) {
+    mask-image: radial-gradient(circle farthest-corner at 50% 50%, $reveal-new);
+  }
 
-html:has(body.view-transition-iris)::view-transition-new(root) {
-  mask-image: radial-gradient(circle farthest-corner at 50% 50%, $reveal-new);
-}
-
-html:has(body.view-transition-iris)::view-transition-old(root) {
-  mask-image: radial-gradient(circle farthest-corner at 50% 50%, $reveal-old);
+  html:has(body.view-transition-iris)::view-transition-old(root) {
+    mask-image: radial-gradient(circle farthest-corner at 50% 50%, $reveal-old);
+  }
 }
 
 // split: the wipe, run twice from the middle outwards. Each half of the page
 // is its own mask layer with its own edge.
-html:has(body.view-transition-split) {
-  &::view-transition-old(root),
-  &::view-transition-new(root) {
-    mask-position:
-      var(--view-transition-split-a-at),
-      var(--view-transition-split-b-at);
-    mask-size: var(--view-transition-split-size);
-    mask-repeat: no-repeat;
-  }
+@if config.has(split) {
+  html:has(body.view-transition-split) {
+    &::view-transition-old(root),
+    &::view-transition-new(root) {
+      mask-position:
+        var(--view-transition-split-a-at),
+        var(--view-transition-split-b-at);
+      mask-size: var(--view-transition-split-size);
+      mask-repeat: no-repeat;
+    }
 
-  &::view-transition-new(root) {
-    mask-image:
-      linear-gradient(var(--view-transition-split-a), $reveal-new),
-      linear-gradient(var(--view-transition-split-b), $reveal-new);
-  }
+    &::view-transition-new(root) {
+      mask-image:
+        linear-gradient(var(--view-transition-split-a), $reveal-new),
+        linear-gradient(var(--view-transition-split-b), $reveal-new);
+    }
 
-  &::view-transition-old(root) {
-    mask-image:
-      linear-gradient(var(--view-transition-split-a), $reveal-old),
-      linear-gradient(var(--view-transition-split-b), $reveal-old);
+    &::view-transition-old(root) {
+      mask-image:
+        linear-gradient(var(--view-transition-split-a), $reveal-old),
+        linear-gradient(var(--view-transition-split-b), $reveal-old);
+    }
   }
 }
 
@@ -280,41 +320,47 @@ $cutout-rest: linear-gradient(
   rgb(0 0 0 / clamp(0, (var(--view-transition-progress) - 0.75) * 4, 1)) 0 0
 );
 
-html:has(body.view-transition-cutout) {
-  &::view-transition-old(root),
-  &::view-transition-new(root) {
-    mask-position: center;
-    mask-repeat: no-repeat;
-  }
+@if config.has(cutout) {
+  html:has(body.view-transition-cutout) {
+    &::view-transition-old(root),
+    &::view-transition-new(root) {
+      mask-position: center;
+      mask-repeat: no-repeat;
+    }
 
-  &::view-transition-new(root) {
-    mask-image: var(--view-transition-shape), $cutout-rest;
-    mask-size:
-      $cutout-size auto,
-      100% 100%;
-  }
+    &::view-transition-new(root) {
+      mask-image: var(--view-transition-shape), $cutout-rest;
+      mask-size:
+        $cutout-size auto,
+        100% 100%;
+    }
 
-  // The old page loses the same shape, grown by the divider on every side, so
-  // the divider colour outlines the cutout.
-  &::view-transition-old(root) {
-    mask-image: var(--view-transition-shape), linear-gradient(#000 0 0);
-    mask-size:
-      calc(#{$cutout-size} + var(--view-transition-divider) * 2) auto,
-      100% 100%;
-    mask-composite: exclude;
+    // The old page loses the same shape, grown by the divider on every side, so
+    // the divider colour outlines the cutout.
+    &::view-transition-old(root) {
+      mask-image: var(--view-transition-shape), linear-gradient(#000 0 0);
+      mask-size:
+        calc(#{$cutout-size} + var(--view-transition-divider) * 2) auto,
+        100% 100%;
+      mask-composite: exclude;
+    }
   }
 }
 
-// The old page only carries the gap, so it has to move exactly with the new.
-html:has(body:is(.view-transition-wipe, .view-transition-iris, .view-transition-split, .view-transition-cutout, .view-transition-lines))::view-transition-old(root) {
-  animation-timing-function: var(
-    --view-transition-new-ease,
-    var(--view-transition-ease, var(--view-transition-preset-new-ease))
-  );
-}
+$reveal-presets: config.classes(wipe, iris, split, cutout, lines);
 
-html:has(body:is(.view-transition-wipe, .view-transition-iris, .view-transition-split, .view-transition-cutout, .view-transition-lines))::view-transition-image-pair(root) {
-  background: var(--view-transition-divider-color);
+@if config.$reveal {
+  // The old page only carries the gap, so it has to move exactly with the new.
+  html:has(body:is(#{$reveal-presets}))::view-transition-old(root) {
+    animation-timing-function: var(
+      --view-transition-new-ease,
+      var(--view-transition-ease, var(--view-transition-preset-new-ease))
+    );
+  }
+
+  html:has(body:is(#{$reveal-presets}))::view-transition-image-pair(root) {
+    background: var(--view-transition-divider-color);
+  }
 }
 
 // slide and cover: the divider is a strip of padding on the incoming page's
@@ -324,128 +370,128 @@ html:has(body:is(.view-transition-wipe, .view-transition-iris, .view-transition-
 $divider-x: calc(var(--view-transition-divider) * var(--view-transition-from-x));
 $divider-y: calc(var(--view-transition-divider) * var(--view-transition-from-y));
 
-html:has(body:is(.view-transition-slide, .view-transition-cover))::view-transition-new(root) {
-  box-sizing: content-box;
-  padding: max(0px, $divider-y) max(0px, calc(#{$divider-x} * -1))
-    max(0px, calc(#{$divider-y} * -1)) max(0px, $divider-x);
-  margin: min(0px, calc(#{$divider-y} * -1)) 0 0 min(0px, calc(#{$divider-x} * -1));
-  background: var(--view-transition-divider-color);
+@if config.has(slide, cover) {
+  html:has(body:is(#{config.classes(slide, cover)}))::view-transition-new(root) {
+    box-sizing: content-box;
+    padding: max(0px, $divider-y) max(0px, calc(#{$divider-x} * -1))
+      max(0px, calc(#{$divider-y} * -1)) max(0px, $divider-x);
+    margin: min(0px, calc(#{$divider-y} * -1)) 0 0 min(0px, calc(#{$divider-x} * -1));
+    background: var(--view-transition-divider-color);
+  }
 }
 
 // lines: the new page is cut into bands. Each band wipes in from one side and
 // the bands start one after another, from the top unless reversed.
-$lines-bands: 24 !default;
-// Share of the progress spent starting the bands; the rest is one band's wipe.
-$lines-sweep: 0.55 !default;
+@if config.has(lines) {
+  $divider: var(--view-transition-divider);
+  $angle: var(--view-transition-lines-angle);
+  $band-height: math.div(100%, config.$lines-bands);
+  $solid: linear-gradient(#000 0 0);
 
-$divider: var(--view-transition-divider);
-$angle: var(--view-transition-lines-angle);
-$band-height: math.div(100%, $lines-bands);
-$solid: linear-gradient(#000 0 0);
+  // The new page shows each band up to its edge. The old page is cut away up to
+  // the edge plus the divider, along the bands and along the steps between
+  // them, so the divider colour shows through as an outline of the staircase.
+  $new-images: ();
+  $new-positions: ();
+  $new-sizes: ();
+  $old-images: ();
+  $old-positions: ();
+  $old-sizes: ();
 
-// The new page shows each band up to its edge. The old page is cut away up to
-// the edge plus the divider, along the bands and along the steps between
-// them, so the divider colour shows through as an outline of the staircase.
-$new-images: ();
-$new-positions: ();
-$new-sizes: ();
-$old-images: ();
-$old-positions: ();
-$old-sizes: ();
+  @for $i from 0 to config.$lines-bands {
+    $edge: var(--view-transition-lines-#{$i});
+    $y: math.percentage(math.div($i, config.$lines-bands - 1));
 
-@for $i from 0 to $lines-bands {
-  $edge: var(--view-transition-lines-#{$i});
-  $y: math.percentage(math.div($i, $lines-bands - 1));
+    $new-images: list.append($new-images, $solid, comma);
+    $new-positions: list.append(
+      $new-positions,
+      var(--view-transition-lines-x) $y,
+      comma
+    );
+    $new-sizes: list.append(
+      $new-sizes,
+      max(0px, calc(#{$edge} - #{$divider})) calc(#{$band-height} + 1px),
+      comma
+    );
 
-  $new-images: list.append($new-images, $solid, comma);
-  $new-positions: list.append(
-    $new-positions,
-    var(--view-transition-lines-x) $y,
-    comma
-  );
-  $new-sizes: list.append(
-    $new-sizes,
-    max(0px, calc(#{$edge} - #{$divider})) calc(#{$band-height} + 1px),
-    comma
-  );
+    $old-images: list.append(
+      $old-images,
+      linear-gradient($angle, #000 $edge, transparent $edge),
+      comma
+    );
+    $old-positions: list.append($old-positions, 0 $y, comma);
+    $old-sizes: list.append($old-sizes, 100% $band-height, comma);
+  }
 
-  $old-images: list.append(
-    $old-images,
-    linear-gradient($angle, #000 $edge, transparent $edge),
-    comma
-  );
-  $old-positions: list.append($old-positions, 0 $y, comma);
-  $old-sizes: list.append($old-sizes, 100% $band-height, comma);
-}
+  @for $i from 0 to config.$lines-bands - 1 {
+    $near: min(
+      var(--view-transition-lines-#{$i}),
+      var(--view-transition-lines-#{$i + 1})
+    );
+    $far: max(
+      var(--view-transition-lines-#{$i}),
+      var(--view-transition-lines-#{$i + 1})
+    );
+    $boundary: math.div($i + 1, config.$lines-bands);
 
-@for $i from 0 to $lines-bands - 1 {
-  $near: min(
-    var(--view-transition-lines-#{$i}),
-    var(--view-transition-lines-#{$i + 1})
-  );
-  $far: max(
-    var(--view-transition-lines-#{$i}),
-    var(--view-transition-lines-#{$i + 1})
-  );
-  $boundary: math.div($i + 1, $lines-bands);
+    $old-images: list.append(
+      $old-images,
+      linear-gradient($angle, transparent $near, #000 $near, #000 $far, transparent $far),
+      comma
+    );
+    // The step sits in whichever band is behind: below the boundary, or above
+    // it when the order is reversed.
+    $old-positions: list.append(
+      $old-positions,
+      0
+        calc(
+          #{math.percentage($boundary)} + #{$divider} * #{$boundary} -
+            var(--view-transition-lines-reverse) * #{$divider}
+        ),
+      comma
+    );
+    $old-sizes: list.append($old-sizes, 100% $divider, comma);
+  }
 
-  $old-images: list.append(
-    $old-images,
-    linear-gradient($angle, transparent $near, #000 $near, #000 $far, transparent $far),
-    comma
-  );
-  // The step sits in whichever band is behind: below the boundary, or above
-  // it when the order is reversed.
-  $old-positions: list.append(
-    $old-positions,
-    0
-      calc(
-        #{math.percentage($boundary)} + #{$divider} * #{$boundary} -
-          var(--view-transition-lines-reverse) * #{$divider}
-      ),
-    comma
-  );
-  $old-sizes: list.append($old-sizes, 100% $divider, comma);
-}
+  $old-images: list.append($old-images, $solid, comma);
+  $old-positions: list.append($old-positions, 0 0, comma);
+  $old-sizes: list.append($old-sizes, 100% 100%, comma);
 
-$old-images: list.append($old-images, $solid, comma);
-$old-positions: list.append($old-positions, 0 0, comma);
-$old-sizes: list.append($old-sizes, 100% 100%, comma);
+  html:has(body.view-transition-lines) {
+    &::view-transition-old(root),
+    &::view-transition-new(root) {
+      // How far each band's edge has travelled, the divider included.
+      @for $i from 0 to config.$lines-bands {
+        $start: math.div($i, config.$lines-bands - 1) * config.$lines-sweep;
+        --view-transition-lines-#{$i}: calc(
+          clamp(
+              0,
+              (
+                  var(--view-transition-progress) - #{$start} -
+                    var(--view-transition-lines-reverse) *
+                    #{config.$lines-sweep - 2 * $start}
+                ) /
+                #{1 - config.$lines-sweep},
+              1
+            ) *
+            (100% + #{$divider})
+        );
+      }
 
-html:has(body.view-transition-lines) {
-  &::view-transition-old(root),
-  &::view-transition-new(root) {
-    // How far each band's edge has travelled, the divider included.
-    @for $i from 0 to $lines-bands {
-      $start: math.div($i, $lines-bands - 1) * $lines-sweep;
-      --view-transition-lines-#{$i}: calc(
-        clamp(
-            0,
-            (
-                var(--view-transition-progress) - #{$start} -
-                  var(--view-transition-lines-reverse) *
-                  #{$lines-sweep - 2 * $start}
-              ) /
-              #{1 - $lines-sweep},
-            1
-          ) *
-          (100% + #{$divider})
-      );
+      mask-repeat: no-repeat;
     }
 
-    mask-repeat: no-repeat;
-  }
+    &::view-transition-new(root) {
+      mask-image: $new-images;
+      mask-position: $new-positions;
+      mask-size: $new-sizes;
+    }
 
-  &::view-transition-new(root) {
-    mask-image: $new-images;
-    mask-position: $new-positions;
-    mask-size: $new-sizes;
-  }
-
-  &::view-transition-old(root) {
-    mask-image: $old-images;
-    mask-position: $old-positions;
-    mask-size: $old-sizes;
-    mask-composite: exclude;
+    &::view-transition-old(root) {
+      mask-image: $old-images;
+      mask-position: $old-positions;
+      mask-size: $old-sizes;
+      mask-composite: exclude;
+    }
   }
 }

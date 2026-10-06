@@ -1,3 +1,4 @@
+@forward 'config' show $presets, $edge-blur, $lines-bands, $lines-sweep;
 @use 'base';
 @use 'helpers';
 @use 'keyframes';

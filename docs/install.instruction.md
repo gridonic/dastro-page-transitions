@@ -28,6 +28,26 @@ Then delete `src/sass/view-transition/` and `src/sass/_view-transition.scss`.
 
 Importing the package enables `@view-transition { navigation: auto }`. A site that does not want snapshots should not import it.
 
+### Ship only the Presets you use (optional)
+
+The import above contains every Preset, about 55 KB of CSS before minification. Once the site has settled on its Preset, name it and the rest is left out:
+
+```scss
+@use 'dastro-page-transitions/styles' with (
+  $presets: slide,
+  $edge-blur: false
+);
+```
+
+| Variable | Default | Effect |
+|---|---|---|
+| `$presets` | every Preset | The Presets to ship: one name or a list, `(slide, cover)`. Fade always ships. |
+| `$edge-blur` | `true` | Whether to ship the [blurred seam](#blurred-seam-optional). Set it to `false` unless the site uses `view-transition-edge-blur`. |
+| `$lines-bands` | `24` | How many bands `lines` cuts the page into. Fewer bands is less CSS. |
+| `$lines-sweep` | `0.55` | Share of `lines` spent starting the bands; the rest is one band's wipe. |
+
+The body class in step 3 still picks the Preset. A class for a Preset that was left out does nothing, and the page fades.
+
 ---
 
 ## 3. Pick a Preset (optional)
@@ -92,7 +112,7 @@ It uses `html::before`, `html::after` and `body::after` as its layers, so do not
 
 `view-transition-slide-up` no longer exists; use `view-transition-slide view-transition-from-bottom`.
 
-Do not set a Sass `$preset`. These CSS variables on `:root` tune any Preset:
+These CSS variables on `:root` tune any Preset:
 
 | Variable | Default | Effect |
 |---|---|---|

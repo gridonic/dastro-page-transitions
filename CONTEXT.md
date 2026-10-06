@@ -34,6 +34,7 @@ The site-header and page header modules that carry **Named groups**.
 - Importing the package enables `@view-transition { navigation: auto }`. Opting out is not using the package.
 - This package does not ship ClientRouter and does not emit same-document swaps
 - A site has exactly one **Preset**, chosen with a class on `body` (not in SCSS, not a component). If omitted, it is fade.
+- The stylesheet ships every **Preset** unless the site narrows it with Sass `$presets`. That decides what ships, not which **Preset** runs.
 - The **Frame** always uses the same classes; the **Preset** decides whether the page header is its own **Named group** or moves with the page, the site-header always persists
 - A **Preset**'s timings are fractions of `--view-transition-duration`, so a site scales any Preset with that one variable
 - `prefers-reduced-motion` means no **Page transition** animation
@@ -46,7 +47,7 @@ The site-header and page header modules that carry **Named groups**.
 ## Flagged ambiguities
 
 - Existing dastro projects use "view transition" for the SCSS kit, ClientRouter, and the browser API at once — resolved: the kit is **Page transitions**; the browser API is **View Transition**; ClientRouter is out of scope.
-- "Which preset in Sass?" — resolved: Sass ships every **Preset**; the layout picks one with a `body` class.
+- "Which preset in Sass?" — resolved: the layout picks the **Preset** with a `body` class. Sass ships every **Preset** by default; `$presets` only leaves unused ones out.
 - The package is CSS-only — resolved: no Astro component; ClientRouter and a preset head component are both out.
 - ClientRouter-only was locked then reversed — resolved: native CSS like everstride, not Astro SPA.
 - Header fade vs slide — resolved: the **Preset** owns the page header, either as its own staggered group or as part of the page; site-header persists. Timing/keyframes are not locked.

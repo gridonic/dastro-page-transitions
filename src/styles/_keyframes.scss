@@ -1,3 +1,5 @@
+@use 'config';
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -26,137 +28,151 @@
   }
 }
 
-@keyframes rise-in {
-  from {
-    opacity: 0;
-    transform: translateY(2rem);
+@if config.has(rise) {
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(2rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-@keyframes rise-out {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-1rem);
+  @keyframes rise-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-1rem);
+    }
   }
 }
 
 // slide and cover start from the edge set by `view-transition-from-*`.
-@keyframes slide-in {
-  from {
-    transform: translate(
-      calc(var(--view-transition-from-x) * 100%),
-      calc(var(--view-transition-from-y) * 100%)
-    );
-  }
-  to {
-    transform: translate(0, 0);
+@if config.has(slide, cover) {
+  @keyframes slide-in {
+    from {
+      transform: translate(
+        calc(var(--view-transition-from-x) * 100%),
+        calc(var(--view-transition-from-y) * 100%)
+      );
+    }
+    to {
+      transform: translate(0, 0);
+    }
   }
 }
 
-@keyframes slide-out {
-  from {
-    transform: translate(0, 0);
-  }
-  to {
-    transform: translate(
-      calc(var(--view-transition-from-x) * -100%),
-      calc(var(--view-transition-from-y) * -100%)
-    );
+@if config.has(slide) {
+  @keyframes slide-out {
+    from {
+      transform: translate(0, 0);
+    }
+    to {
+      transform: translate(
+        calc(var(--view-transition-from-x) * -100%),
+        calc(var(--view-transition-from-y) * -100%)
+      );
+    }
   }
 }
 
 // flip turns around the axis that faces the edge set by
 // `view-transition-from-*`. Each page only ever shows its front: the old one
 // turns away to edge-on, then the new one turns in from edge-on.
-@keyframes flip-out {
-  from {
-    transform: perspective(var(--view-transition-perspective))
-      rotate3d(
-        var(--view-transition-from-y),
-        calc(var(--view-transition-from-x) * -1),
-        0,
-        0deg
-      );
+@if config.has(flip) {
+  @keyframes flip-out {
+    from {
+      transform: perspective(var(--view-transition-perspective))
+        rotate3d(
+          var(--view-transition-from-y),
+          calc(var(--view-transition-from-x) * -1),
+          0,
+          0deg
+        );
+    }
+    to {
+      transform: perspective(var(--view-transition-perspective))
+        rotate3d(
+          var(--view-transition-from-y),
+          calc(var(--view-transition-from-x) * -1),
+          0,
+          90deg
+        );
+    }
   }
-  to {
-    transform: perspective(var(--view-transition-perspective))
-      rotate3d(
-        var(--view-transition-from-y),
-        calc(var(--view-transition-from-x) * -1),
-        0,
-        90deg
-      );
+
+  @keyframes flip-in {
+    from {
+      transform: perspective(var(--view-transition-perspective))
+        rotate3d(
+          var(--view-transition-from-y),
+          calc(var(--view-transition-from-x) * -1),
+          0,
+          -90deg
+        );
+    }
+    to {
+      transform: perspective(var(--view-transition-perspective))
+        rotate3d(
+          var(--view-transition-from-y),
+          calc(var(--view-transition-from-x) * -1),
+          0,
+          0deg
+        );
+    }
   }
 }
 
-@keyframes flip-in {
-  from {
-    transform: perspective(var(--view-transition-perspective))
-      rotate3d(
-        var(--view-transition-from-y),
-        calc(var(--view-transition-from-x) * -1),
-        0,
-        -90deg
-      );
-  }
-  to {
-    transform: perspective(var(--view-transition-perspective))
-      rotate3d(
-        var(--view-transition-from-y),
-        calc(var(--view-transition-from-x) * -1),
-        0,
-        0deg
-      );
-  }
-}
-
-@keyframes cover-out {
-  from {
-    filter: brightness(1);
-    transform: scale(1);
-  }
-  to {
-    filter: brightness(0.6);
-    transform: scale(0.96);
+@if config.has(cover) {
+  @keyframes cover-out {
+    from {
+      filter: brightness(1);
+      transform: scale(1);
+    }
+    to {
+      filter: brightness(0.6);
+      transform: scale(0.96);
+    }
   }
 }
 
 // wipe, iris and lines are masks driven by `--view-transition-progress`.
-@keyframes reveal {
-  from {
-    --view-transition-progress: 0;
-  }
-  to {
-    --view-transition-progress: 1;
-  }
-}
-
-@keyframes blur-in {
-  from {
-    opacity: 0;
-    filter: blur(var(--view-transition-blur));
-  }
-  to {
-    opacity: 1;
-    filter: blur(0);
+@if config.$reveal or config.$edge {
+  @keyframes reveal {
+    from {
+      --view-transition-progress: 0;
+    }
+    to {
+      --view-transition-progress: 1;
+    }
   }
 }
 
-@keyframes blur-out {
-  from {
-    opacity: 1;
-    filter: blur(0);
+@if config.has(blur) {
+  @keyframes blur-in {
+    from {
+      opacity: 0;
+      filter: blur(var(--view-transition-blur));
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+    }
   }
-  to {
-    opacity: 0;
-    filter: blur(var(--view-transition-blur));
+
+  @keyframes blur-out {
+    from {
+      opacity: 1;
+      filter: blur(0);
+    }
+    to {
+      opacity: 0;
+      filter: blur(var(--view-transition-blur));
+    }
   }
 }

@@ -1,13 +1,17 @@
+@use 'config';
+
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
   }
 }
 
-@property --view-transition-progress {
-  syntax: '<number>';
-  inherits: false;
-  initial-value: 0;
+@if config.$reveal or config.$edge {
+  @property --view-transition-progress {
+    syntax: '<number>';
+    inherits: false;
+    initial-value: 0;
+  }
 }
 
 ::view-transition {
@@ -27,14 +31,32 @@
   --view-transition-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --view-transition-ease-in-out: cubic-bezier(0.6, 0, 0.1, 1);
   --view-transition-backdrop: transparent;
-  --view-transition-blur: 20px;
-  --view-transition-perspective: 150vmax;
-  --view-transition-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E");
-  --view-transition-feather: 0px;
-  --view-transition-divider: 0px;
-  --view-transition-divider-color: currentColor;
-  --view-transition-edge-blur: 8px;
-  --view-transition-edge-width: 30vmax;
+
+  @if config.has(blur) {
+    --view-transition-blur: 20px;
+  }
+
+  @if config.has(flip) {
+    --view-transition-perspective: 150vmax;
+  }
+
+  @if config.has(cutout) {
+    --view-transition-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E");
+  }
+
+  @if config.has(wipe, iris, split) {
+    --view-transition-feather: 0px;
+  }
+
+  @if config.$reveal or config.has(slide, cover) {
+    --view-transition-divider: 0px;
+    --view-transition-divider-color: currentColor;
+  }
+
+  @if config.$edge {
+    --view-transition-edge-blur: 8px;
+    --view-transition-edge-width: 30vmax;
+  }
 
   // The Preset bundle. These are fade; a Preset overrides what differs.
   --view-transition-old-name: fade-out;
@@ -52,15 +74,26 @@
   // Where slide, cover, wipe and lines start from. Set by
   // `view-transition-from-*`; slide defaults to the right instead.
   // from-x and from-y are -1, 0 or 1: which way off screen the page starts.
-  --view-transition-from-x: 0;
-  --view-transition-from-y: 1;
-  --view-transition-wipe-angle: 0deg;
-  --view-transition-split-size: calc(50% + 1px) 100%;
-  --view-transition-split-a: to left;
-  --view-transition-split-b: to right;
-  --view-transition-split-a-at: left;
-  --view-transition-split-b-at: right;
-  --view-transition-lines-x: 0%;
-  --view-transition-lines-angle: 90deg;
-  --view-transition-lines-reverse: 0;
+  @if config.has(slide, flip, cover) {
+    --view-transition-from-x: 0;
+    --view-transition-from-y: 1;
+  }
+
+  @if config.$wipe-angle {
+    --view-transition-wipe-angle: 0deg;
+  }
+
+  @if config.has(split) {
+    --view-transition-split-size: calc(50% + 1px) 100%;
+    --view-transition-split-a: to left;
+    --view-transition-split-b: to right;
+    --view-transition-split-a-at: left;
+    --view-transition-split-b-at: right;
+  }
+
+  @if config.has(lines) {
+    --view-transition-lines-x: 0%;
+    --view-transition-lines-angle: 90deg;
+    --view-transition-lines-reverse: 0;
+  }
 }

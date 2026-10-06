@@ -1,4 +1,5 @@
 @use 'sass:math';
+@use 'config';
 
 // Opt-in blurred seam for slide, cover, wipe and iris: add the body class
 // `view-transition-edge-blur`.
@@ -12,71 +13,76 @@
 // This claims `html::before`, `html::after` and `body::after`, which is why it
 // is a class and not only a variable.
 $edge-layers: 3;
-$edge-presets: '.view-transition-slide, .view-transition-cover, .view-transition-wipe, .view-transition-iris';
-$edge-on: 'html:has(body.view-transition-edge-blur:is(#{$edge-presets}))';
 $progress: var(--view-transition-progress);
 
-#{$edge-on}::before,
-#{$edge-on}::after,
-#{$edge-on} body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
+@if config.$edge {
+  $edge-presets: config.classes(slide, cover, wipe, iris);
+  $edge-on: 'html:has(body.view-transition-edge-blur:is(#{$edge-presets}))';
 
-#{$edge-on}::before {
-  view-transition-name: view-transition-edge-1;
-}
-
-#{$edge-on}::after {
-  view-transition-name: view-transition-edge-2;
-}
-
-#{$edge-on} body::after {
-  view-transition-name: view-transition-edge-3;
-}
-
-@for $i from 1 through $edge-layers {
-  $name: view-transition-edge-#{$i};
-  // Half the band this layer blurs: the full width for the first, a third of
-  // it for the last.
-  $reach: calc(
-    var(--view-transition-edge-width) / 2 * #{math.div($edge-layers + 1 - $i, $edge-layers)}
-  );
-  $stops: transparent calc(#{$progress} * 100% - #{$reach}),
-    #000 calc(#{$progress} * 100%),
-    transparent calc(#{$progress} * 100% + #{$reach});
-
-  ::view-transition-old(#{$name}) {
-    display: none;
+  #{$edge-on}::before,
+  #{$edge-on}::after,
+  #{$edge-on} body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
   }
 
-  ::view-transition-new(#{$name}) {
-    animation: none;
+  #{$edge-on}::before {
+    view-transition-name: view-transition-edge-1;
   }
 
-  // The seam is where the page edge is: the layers run on the new page's clock.
-  ::view-transition-group(#{$name}) {
-    animation: var(--view-transition-new-duration)
-      var(
-        --view-transition-new-ease,
-        var(--view-transition-ease, var(--view-transition-preset-new-ease))
-      )
-      var(--view-transition-new-delay) both reveal;
-    // Fades the blur in and out over the first and last eighth, where the band
-    // is half off screen.
-    backdrop-filter: blur(
-      calc(
-        var(--view-transition-edge-blur) *
-          clamp(0, min(#{$progress}, 1 - #{$progress}) * 8, 1)
-      )
+  #{$edge-on}::after {
+    view-transition-name: view-transition-edge-2;
+  }
+
+  #{$edge-on} body::after {
+    view-transition-name: view-transition-edge-3;
+  }
+
+  @for $i from 1 through $edge-layers {
+    $name: view-transition-edge-#{$i};
+    // Half the band this layer blurs: the full width for the first, a third of
+    // it for the last.
+    $reach: calc(
+      var(--view-transition-edge-width) / 2 * #{math.div($edge-layers + 1 - $i, $edge-layers)}
     );
-    mask-image: linear-gradient(var(--view-transition-wipe-angle), $stops);
-  }
+    $stops: transparent calc(#{$progress} * 100% - #{$reach}),
+      #000 calc(#{$progress} * 100%),
+      transparent calc(#{$progress} * 100% + #{$reach});
 
-  html:has(body.view-transition-iris)::view-transition-group(#{$name}) {
-    mask-image: radial-gradient(circle farthest-corner at 50% 50%, $stops);
+    ::view-transition-old(#{$name}) {
+      display: none;
+    }
+
+    ::view-transition-new(#{$name}) {
+      animation: none;
+    }
+
+    // The seam is where the page edge is: the layers run on the new page's clock.
+    ::view-transition-group(#{$name}) {
+      animation: var(--view-transition-new-duration)
+        var(
+          --view-transition-new-ease,
+          var(--view-transition-ease, var(--view-transition-preset-new-ease))
+        )
+        var(--view-transition-new-delay) both reveal;
+      // Fades the blur in and out over the first and last eighth, where the band
+      // is half off screen.
+      backdrop-filter: blur(
+        calc(
+          var(--view-transition-edge-blur) *
+            clamp(0, min(#{$progress}, 1 - #{$progress}) * 8, 1)
+        )
+      );
+      mask-image: linear-gradient(var(--view-transition-wipe-angle), $stops);
+    }
+
+    @if config.has(iris) {
+      html:has(body.view-transition-iris)::view-transition-group(#{$name}) {
+        mask-image: radial-gradient(circle farthest-corner at 50% 50%, $stops);
+      }
+    }
   }
 }
