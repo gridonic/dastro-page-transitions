@@ -1,3 +1,7 @@
+### [0.3.4](https://github.com/gridonic/dastro-page-transitions/compare/v0.3.3...v0.3.4)
+
+- added curtain preset
+
 ### [0.3.3](https://github.com/gridonic/dastro-page-transitions/compare/v0.3.2...v0.3.3)
 
 - added overview to detail page animations

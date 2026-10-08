@@ -7,7 +7,7 @@ Cross-document [View Transitions](https://developer.mozilla.org/en-US/docs/Web/A
 See [docs/install.instruction.md](./docs/install.instruction.md).
 
 ```bash
-npm i github:gridonic/dastro-page-transitions#v0.3.3
+npm i github:gridonic/dastro-page-transitions#v0.3.4
 ```
 
 ```scss
