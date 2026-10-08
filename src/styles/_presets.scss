@@ -149,7 +149,24 @@
   }
 }
 
-// The edge slide, cover and wipe start from. For split, left/right opens it
+// curtain: the backdrop is the curtain. It has to cover the site-header too,
+// so here the site-header is part of the page like the page header.
+@if config.has(curtain) {
+  html:has(body.view-transition-curtain) {
+    --view-transition-old-name: curtain-out;
+    --view-transition-new-name: curtain-in;
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 0.85);
+    --view-transition-new-duration: var(--view-transition-duration);
+    --view-transition-new-delay: calc(var(--view-transition-duration) * 1.1);
+    --view-transition-preset-old-ease: cubic-bezier(0.76, 0, 0.24, 1);
+    --view-transition-preset-new-ease: cubic-bezier(0.76, 0, 0.24, 1);
+    --view-transition-blend: normal;
+    --view-transition-header-name: none;
+    --view-transition-site-header-name: none;
+  }
+}
+
+// The edge slide, cover, wipe and curtain start from. For split, left/right opens it
 // sideways and top/bottom opens it up and down. For lines, left/right is the side each
 // band wipes in from and top/bottom is the band that goes first, so it takes
 // one class of each pair.
@@ -170,7 +187,7 @@
     }
   }
 
-  @if config.has(slide, flip, cover) {
+  @if config.has(slide, flip, cover, curtain) {
     --view-transition-from-x: #{$x};
     --view-transition-from-y: #{$y};
   }

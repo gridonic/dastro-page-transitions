@@ -231,6 +231,21 @@ const nav = [
           )
         }
         {
+          preset === 'curtain' && (
+            <label>
+              <span class="name">
+                Curtain
+                <Info text="Colour of the panel that covers the screen between the two pages." />
+              </span>
+              <select data-var="--view-transition-backdrop">
+                <option value="">Background colour</option>
+                <option value="var(--page-fg)">Text colour</option>
+                <option value="var(--color-primary)">Accent colour</option>
+              </select>
+            </label>
+          )
+        }
+        {
           preset === 'blur' && (
             <label>
               <span class="name">

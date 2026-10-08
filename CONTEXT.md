@@ -13,15 +13,15 @@ The browser API (snapshots, `::view-transition-*` pseudos) enabled by `@view-tra
 *Avoid*: treating ClientRouter or an Astro component as what starts it
 
 **Preset**:
-The one site-wide animation for the root page swap and the page header. A bundle of custom properties (keyframes, durations, delays, easing, whether the page header is its own **Named group**). Names: fade, rise, dip, blur, slide, flip, cover, wipe, iris, split, cutout, lines. Default fade. Motion details are not locked.
+The one site-wide animation for the root page swap and the page header. A bundle of custom properties (keyframes, durations, delays, easing, whether the page header is its own **Named group**). Names: fade, rise, dip, blur, slide, flip, cover, wipe, iris, split, cutout, lines, curtain. Default fade. Motion details are not locked.
 *Avoid*: using this for site-header motion, treating a keyframe as the Preset
 
 **Origin**:
-The edge a **Preset** starts from, for the Presets that have one (slide, flip, cover, wipe, split, lines). A second class on `body`, `view-transition-from-top|right|bottom|left`, next to the Preset class. Fixed for the site; it never changes with the navigation.
+The edge a **Preset** starts from, for the Presets that have one (slide, flip, cover, wipe, split, lines, curtain). A second class on `body`, `view-transition-from-top|right|bottom|left`, next to the Preset class. Fixed for the site; it never changes with the navigation.
 *Avoid*: direction, reverse, a separate Preset per edge (slide-up)
 
 **Named group**:
-A `view-transition-name` on the **Frame**. Projects attach it with the existing classes `.view-transition-header` (the **Preset** decides whether it is its own group or part of the page) and `.view-transition-site-header` (persist).
+A `view-transition-name` on the **Frame**. Projects attach it with the existing classes `.view-transition-header` (the **Preset** decides whether it is its own group or part of the page) and `.view-transition-site-header` (persist, except under curtain).
 *Avoid*: per-site toggle, per-page override, renaming those classes
 
 **Frame**:
@@ -39,7 +39,7 @@ An element that is on both pages of a **Page transition**, like an article's ima
 - This package does not ship ClientRouter and does not emit same-document swaps
 - A site has exactly one **Preset**, chosen with a class on `body` (not in SCSS, not a component). If omitted, it is fade.
 - The stylesheet ships every **Preset** unless the site narrows it with Sass `$presets`. That decides what ships, not which **Preset** runs.
-- The **Frame** always uses the same classes; the **Preset** decides whether the page header is its own **Named group** or moves with the page, the site-header always persists
+- The **Frame** always uses the same classes; the **Preset** decides whether the page header is its own **Named group** or moves with the page. The site-header persists under every **Preset** but curtain, whose panel covers the whole screen
 - A **Preset**'s timings are fractions of `--view-transition-duration`, so a site scales any Preset with that one variable
 - **Shared elements** are not a **Preset** and do not replace it: they run on top of the Preset the site has
 - Every **Shared element** on a page is a **Named group** in every navigation. One without a counterpart on the other page replays the **Preset**, which only matches the page under fade, rise, dip and blur; under the other Presets nothing is shared
@@ -62,5 +62,6 @@ An element that is on both pages of a **Page transition**, like an article's ima
 - Back-button reverse — resolved: never reverse. **Direction** is not a term; the fixed edge a Preset starts from is its **Origin**.
 - `slide-up` as its own Preset — resolved: removed. It is slide with the **Origin** bottom. Preset motion will be iterated; names are the catalog, not the keyframes.
 - "Chrome" collided with the browser — resolved: the site-header and page header are the **Frame**.
+- "The site-header always persists" — resolved: under every **Preset** but curtain. A bar that stays put would sit on top of the panel that is meant to cover the screen, so there it is part of the page.
 - "Is overview-to-detail a new Preset?" — resolved: no. A **Preset** is how the page is swapped; a **Shared element** is one element crossing that swap.
 - A script that names only the clicked article's elements — resolved: out. The package stays CSS-only; the price is that **Shared elements** are limited to the fade Presets.

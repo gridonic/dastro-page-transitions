@@ -22,7 +22,7 @@
   // A group without a counterpart can only replay the Preset on its own. That
   // matches the page where the Preset is a fade. Where the page moves as one
   // surface it would come loose from it, so there nothing is shared.
-  $surface: config.classes(slide, flip, cover, wipe, iris, split, cutout, lines);
+  $surface: config.classes(slide, flip, cover, wipe, iris, split, cutout, lines, curtain);
 
   @if list.length($surface) > 0 {
     html:has(body:is(#{$surface})) :is(.view-transition-shared, .view-transition-shared-image) {

@@ -30,7 +30,7 @@ Importing the package enables `@view-transition { navigation: auto }`. A site th
 
 ### Ship only the Presets you use (optional)
 
-The import above contains every Preset, about 55 KB of CSS before minification. Once the site has settled on its Preset, name it and the rest is left out:
+The import above contains every Preset, about 60 KB of CSS before minification. Once the site has settled on its Preset, name it and the rest is left out:
 
 ```scss
 @use 'dastro-page-transitions/styles' with (
@@ -73,8 +73,9 @@ Fade runs when no Preset class is set. Pass one class through LayoutBase’s `bo
 | `view-transition-split` | Old page opens from the middle outwards over the new page |
 | `view-transition-cutout` | New page shows through a shape that grows from the centre |
 | `view-transition-lines` | New page is revealed in bands, one after another |
+| `view-transition-curtain` | A coloured panel covers the old page, holds, then uncovers the new page |
 
-Slide, flip, cover, wipe, split and lines start from an edge, their **Origin**. Add a second class to change it:
+Slide, flip, cover, wipe, split, lines and curtain start from an edge, their **Origin**. Add a second class to change it:
 
 ```astro
 <LayoutBase bodyClass="ui-sticky-footer text-md view-transition-cover view-transition-from-left">
@@ -88,6 +89,19 @@ Slide, flip, cover, wipe, split and lines start from an edge, their **Origin**. 
 | wipe | `bottom` | `top`, `right`, `bottom`, `left`: the edge the reveal starts from |
 | split | `left` | `left` or `right`: opens sideways. `top` or `bottom`: opens up and down. |
 | lines | `left` and `top` | `left` or `right`: the side each band starts from. `top` or `bottom`: the band that goes first. Takes one of each. |
+| curtain | `bottom` | `top`, `right`, `bottom`, `left`: the edge the panel comes in from. It leaves through the opposite one. |
+
+### Curtain colour
+
+`view-transition-curtain` covers the whole screen with a panel before the new page appears. The panel is the backdrop, so give it a colour:
+
+```scss
+:root {
+  --view-transition-backdrop: var(--color-primary);
+}
+```
+
+Without one the panel has the background colour of the page being opened. Under this Preset `.view-transition-site-header` does not stay put: the panel covers it with the rest of the page.
 
 ### Cutout shape
 
@@ -120,9 +134,10 @@ These CSS variables on `:root` tune any Preset:
 | `--view-transition-duration` | `0.6s` | Base length. Every Preset's timings are fractions of it. |
 | `--view-transition-ease` | _(unset)_ | Easing for both pages, replacing the Preset's own curves. Any easing function works, including `linear()`. |
 | `--view-transition-old-ease`, `--view-transition-new-ease` | _(unset)_ | Easing for the outgoing or the incoming page only. Wins over `--view-transition-ease`. |
-| `--view-transition-backdrop` | `transparent` | Colour behind the pages, seen in the gap of `dip`, `rise` and `blur`, around the old page in `cover` and around the turning page in `flip`. Transparent shows the incoming page's background. |
+| `--view-transition-backdrop` | `transparent` | Colour behind the pages, seen in the gap of `dip`, `rise` and `blur`, around the old page in `cover` and around the turning page in `flip`. In `curtain` it is the panel itself. Transparent shows the incoming page's background. |
 | `--view-transition-perspective` | `150vmax` | Viewing distance of `flip`. Smaller is a stronger 3D effect. |
 | `--view-transition-blur` | `20px` | Blur radius of `blur`. |
+| `--view-transition-curtain-drift` | `12%` | How far the pages move along with the panel in `curtain`, as a share of the screen. `0%` leaves them still. |
 | `--view-transition-feather` | `0px` | Width the edge of `wipe`, `iris` and `split` fades over. `0px` is a hard edge; try `20vh`. A feathered edge has no divider. |
 | `--view-transition-divider` | `0px` | Width of a line along the edge between the pages in `slide`, `cover`, `wipe`, `iris`, `split`, `cutout` and `lines`. `0px` is no line. |
 | `--view-transition-divider-color` | `currentColor` | Colour of that line. |
@@ -138,7 +153,7 @@ Projects already put these on header modules and the site bar. Leave them:
 <header class="site-header view-transition-site-header">
 ```
 
-The **Preset** decides what `.view-transition-header` does: under fade, rise, dip and blur it arrives a beat after the page; under the others it moves as part of the page. `.view-transition-site-header` does not animate.
+The **Preset** decides what `.view-transition-header` does: under fade, rise, dip and blur it arrives a beat after the page; under the others it moves as part of the page. `.view-transition-site-header` does not animate, except under curtain, where it is part of the page too.
 
 ---
 

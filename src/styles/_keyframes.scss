@@ -141,6 +141,50 @@
   }
 }
 
+// curtain: the old page is clipped away from the edge set by
+// `view-transition-from-*` and the new page is clipped in from it, so the
+// backdrop crosses the screen in between as a panel. Both pages drift the same
+// way as the panel and dim under it. Clip and drift add up to the full page, so
+// the panel's edge travels from one side of the screen to the other.
+@if config.has(curtain) {
+  $drift: var(--view-transition-curtain-drift);
+  $clip: calc(100% - #{$drift});
+  $x: var(--view-transition-from-x);
+  $y: var(--view-transition-from-y);
+
+  @keyframes curtain-out {
+    from {
+      clip-path: inset(0);
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+    to {
+      clip-path: inset(
+        calc(max(0, #{$y} * -1) * #{$clip}) calc(max(0, #{$x}) * #{$clip})
+          calc(max(0, #{$y}) * #{$clip}) calc(max(0, #{$x} * -1) * #{$clip})
+      );
+      opacity: 0.5;
+      transform: translate(calc(#{$x} * -1 * #{$drift}), calc(#{$y} * -1 * #{$drift}));
+    }
+  }
+
+  @keyframes curtain-in {
+    from {
+      clip-path: inset(
+        calc(max(0, #{$y}) * #{$clip}) calc(max(0, #{$x} * -1) * #{$clip})
+          calc(max(0, #{$y} * -1) * #{$clip}) calc(max(0, #{$x}) * #{$clip})
+      );
+      opacity: 0.5;
+      transform: translate(calc(#{$x} * #{$drift}), calc(#{$y} * #{$drift}));
+    }
+    to {
+      clip-path: inset(0);
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+  }
+}
+
 // wipe, iris and lines are masks driven by `--view-transition-progress`.
 @if config.$reveal or config.$edge {
   @keyframes reveal {

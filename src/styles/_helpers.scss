@@ -3,5 +3,5 @@
 }
 
 .view-transition-site-header {
-  view-transition-name: site-header;
+  view-transition-name: var(--view-transition-site-header-name, site-header);
 }
