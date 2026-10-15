@@ -1,3 +1,7 @@
+### [0.3.6](https://github.com/gridonic/dastro-page-transitions/compare/v0.3.5...v0.3.6)
+
+- fix unveil transition
+
 ### [0.3.5](https://github.com/gridonic/dastro-page-transitions/compare/v0.3.4...v0.3.5)
 
 - added unveil preset
