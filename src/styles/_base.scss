@@ -50,6 +50,7 @@
     --view-transition-unveil-x: -1;
     --view-transition-unveil-y: 1;
     --view-transition-unveil-scale: 1.08;
+    --view-transition-unveil-overshoot: 10%;
   }
 
   @if config.has(cutout) {

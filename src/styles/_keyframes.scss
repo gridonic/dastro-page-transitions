@@ -189,7 +189,10 @@
 // scaled up to the page. Its clip opens from the corner set by
 // `view-transition-from-*` while the page settles from a slight zoom towards
 // that corner. It fades up only while it is small: a page that stayed see-
-// through would show the old page's text through its own.
+// through would show the old page's text through its own. The clip opens past
+// the screen (`--view-transition-unveil-overshoot`), so its edge leaves the
+// screen while it still moves instead of creeping along the border through the
+// end of the easing, which leaves a sliver of the old page that then pops.
 @if config.has(unveil) {
   $x: var(--view-transition-unveil-x);
   $y: var(--view-transition-unveil-y);
@@ -207,7 +210,7 @@
       opacity: 1;
     }
     to {
-      clip-path: inset(0);
+      clip-path: inset(calc(var(--view-transition-unveil-overshoot) * -1));
       opacity: 1;
       transform: scale(1);
     }

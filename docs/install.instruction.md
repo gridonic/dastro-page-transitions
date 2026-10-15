@@ -140,6 +140,7 @@ These CSS variables on `:root` tune any Preset:
 | `--view-transition-perspective` | `150vmax` | Viewing distance of `flip`. Smaller is a stronger 3D effect. |
 | `--view-transition-blur` | `20px` | Blur radius of `blur`. |
 | `--view-transition-unveil-scale` | `1.08` | The zoom the new page settles from in `unveil`. `1` grows it without a zoom. |
+| `--view-transition-unveil-overshoot` | `10%` | How far past the screen the clip of `unveil` opens, so its edge leaves the screen while it still moves. `0%` stops it at the border, where an easing's slow end lets a sliver of the old page linger. |
 | `--view-transition-curtain-drift` | `12%` | How far the pages move along with the panel in `curtain`, as a share of the screen. `0%` leaves them still. |
 | `--view-transition-feather` | `0px` | Width the edge of `wipe`, `iris` and `split` fades over. `0px` is a hard edge; try `20vh`. A feathered edge has no divider. |
 | `--view-transition-divider` | `0px` | Width of a line along the edge between the pages in `slide`, `cover`, `wipe`, `iris`, `split`, `cutout` and `lines`. `0px` is no line. |
