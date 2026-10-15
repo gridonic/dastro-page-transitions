@@ -74,8 +74,9 @@ Fade runs when no Preset class is set. Pass one class through LayoutBase’s `bo
 | `view-transition-cutout` | New page shows through a shape that grows from the centre |
 | `view-transition-lines` | New page is revealed in bands, one after another |
 | `view-transition-curtain` | A coloured panel covers the old page, holds, then uncovers the new page |
+| `view-transition-unveil` | New page grows out of a corner over the old one, settling from a slight zoom |
 
-Slide, flip, cover, wipe, split, lines and curtain start from an edge, their **Origin**. Add a second class to change it:
+Slide, flip, cover, wipe, split, lines, curtain and unveil start from an edge or a corner, their **Origin**. Add a second class to change it:
 
 ```astro
 <LayoutBase bodyClass="ui-sticky-footer text-md view-transition-cover view-transition-from-left">
@@ -90,6 +91,7 @@ Slide, flip, cover, wipe, split, lines and curtain start from an edge, their **O
 | split | `left` | `left` or `right`: opens sideways. `top` or `bottom`: opens up and down. |
 | lines | `left` and `top` | `left` or `right`: the side each band starts from. `top` or `bottom`: the band that goes first. Takes one of each. |
 | curtain | `bottom` | `top`, `right`, `bottom`, `left`: the edge the panel comes in from. It leaves through the opposite one. |
+| unveil | `left` and `bottom` | `left` or `right`, and `top` or `bottom`: together the corner the new page grows out of. Takes one of each; a class that is left out keeps its default. |
 
 ### Curtain colour
 
@@ -137,6 +139,7 @@ These CSS variables on `:root` tune any Preset:
 | `--view-transition-backdrop` | `transparent` | Colour behind the pages, seen in the gap of `dip`, `rise` and `blur`, around the old page in `cover` and around the turning page in `flip`. In `curtain` it is the panel itself. Transparent shows the incoming page's background. |
 | `--view-transition-perspective` | `150vmax` | Viewing distance of `flip`. Smaller is a stronger 3D effect. |
 | `--view-transition-blur` | `20px` | Blur radius of `blur`. |
+| `--view-transition-unveil-scale` | `1.08` | The zoom the new page settles from in `unveil`. `1` grows it without a zoom. |
 | `--view-transition-curtain-drift` | `12%` | How far the pages move along with the panel in `curtain`, as a share of the screen. `0%` leaves them still. |
 | `--view-transition-feather` | `0px` | Width the edge of `wipe`, `iris` and `split` fades over. `0px` is a hard edge; try `20vh`. A feathered edge has no divider. |
 | `--view-transition-divider` | `0px` | Width of a line along the edge between the pages in `slide`, `cover`, `wipe`, `iris`, `split`, `cutout` and `lines`. `0px` is no line. |

@@ -20,9 +20,11 @@ That ships every **Preset**. A site that only uses some can leave the rest out:
 @use 'dastro-page-transitions/styles' with ($presets: slide, $edge-blur: false);
 ```
 
-Fade is the default. Pick another **Preset** with a class on `body`: `view-transition-rise`, `-dip`, `-blur`, `-slide`, `-flip`, `-cover`, `-wipe`, `-iris`, `-split`, `-cutout`, `-lines` or `-curtain`. Slide, flip, cover, wipe, split, lines and curtain take an **Origin** as a second class: `view-transition-from-top`, `-right`, `-bottom` or `-left`. The **Frame** uses the existing classes `.view-transition-header` and `.view-transition-site-header`.
+Fade is the default. Pick another **Preset** with a class on `body`: `view-transition-rise`, `-dip`, `-blur`, `-slide`, `-flip`, `-cover`, `-wipe`, `-iris`, `-split`, `-cutout`, `-lines`, `-curtain` or `-unveil`. Slide, flip, cover, wipe, split, lines, curtain and unveil take an **Origin** as a second class: `view-transition-from-top`, `-right`, `-bottom` or `-left`. The **Frame** uses the existing classes `.view-transition-header` and `.view-transition-site-header`.
 
 Curtain covers the screen with a panel between the two pages. Its colour is `--view-transition-backdrop`.
+
+Unveil grows the new page out of a corner, like an image revealed on scroll. The corner takes one class of each pair: `view-transition-from-left` or `-right`, and `-top` or `-bottom`.
 
 Under fade, rise, dip and blur an overview can hand an article's image and heading over to the article's page. Mark them on both pages as **Shared elements**: the class `view-transition-shared-image` or `view-transition-shared`, and the same name in `--view-transition-shared-name`.
 

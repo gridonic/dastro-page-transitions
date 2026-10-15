@@ -185,6 +185,35 @@
   }
 }
 
+// unveil: the new page grows out of a corner, the media reveal of a module
+// scaled up to the page. Its clip opens from the corner set by
+// `view-transition-from-*` while the page settles from a slight zoom towards
+// that corner. It fades up only while it is small: a page that stayed see-
+// through would show the old page's text through its own.
+@if config.has(unveil) {
+  $x: var(--view-transition-unveil-x);
+  $y: var(--view-transition-unveil-y);
+
+  @keyframes unveil-in {
+    from {
+      clip-path: inset(
+        calc(max(0, #{$y}) * 100%) calc(max(0, #{$x} * -1) * 100%)
+          calc(max(0, #{$y} * -1) * 100%) calc(max(0, #{$x}) * 100%)
+      );
+      opacity: 0;
+      transform: scale(var(--view-transition-unveil-scale));
+    }
+    25% {
+      opacity: 1;
+    }
+    to {
+      clip-path: inset(0);
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
 // wipe, iris and lines are masks driven by `--view-transition-progress`.
 @if config.$reveal or config.$edge {
   @keyframes reveal {

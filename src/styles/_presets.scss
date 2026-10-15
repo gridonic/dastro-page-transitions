@@ -166,10 +166,32 @@
   }
 }
 
+// unveil: the new page grows out of a corner over the old one, which holds
+// still underneath until it is covered. The page header moves with the page;
+// the site-header stays put.
+@if config.has(unveil) {
+  html:has(body.view-transition-unveil) {
+    --view-transition-old-name: hold;
+    --view-transition-new-name: unveil-in;
+    --view-transition-old-duration: calc(var(--view-transition-duration) * 1.5);
+    --view-transition-new-duration: calc(var(--view-transition-duration) * 1.5);
+    --view-transition-preset-old-ease: linear;
+    --view-transition-preset-new-ease: var(--view-transition-ease-out);
+    --view-transition-blend: normal;
+    --view-transition-header-name: none;
+  }
+
+  html:has(body.view-transition-unveil)::view-transition-new(root) {
+    transform-origin: calc((var(--view-transition-unveil-x) + 1) * 50%)
+      calc((var(--view-transition-unveil-y) + 1) * 50%);
+  }
+}
+
 // The edge slide, cover, wipe and curtain start from. For split, left/right opens it
 // sideways and top/bottom opens it up and down. For lines, left/right is the side each
 // band wipes in from and top/bottom is the band that goes first, so it takes
-// one class of each pair.
+// one class of each pair. unveil takes one of each pair too: together they name
+// the corner the new page grows out of.
 @mixin origin($x, $y, $angle) {
   @if config.has(split) {
     @if $x == 0 {
@@ -194,6 +216,15 @@
 
   @if config.$wipe-angle {
     --view-transition-wipe-angle: #{$angle};
+  }
+
+  @if config.has(unveil) {
+    @if $x != 0 {
+      --view-transition-unveil-x: #{$x};
+    }
+    @if $y != 0 {
+      --view-transition-unveil-y: #{$y};
+    }
   }
 
   @if config.has(lines) {

@@ -12,6 +12,7 @@ export const presets = [
   'cutout',
   'lines',
   'curtain',
+  'unveil',
 ] as const;
 export const articles = ['harbour', 'ridge', 'tide', 'ember'] as const;
 export const pages = [
@@ -98,6 +99,11 @@ export const presetInfo: Record<
     motion: 'A panel in one colour rises over the old page and covers the whole screen, the bar included. After a short hold it leaves through the opposite edge and the new page comes up behind it.',
     header: 'With the page',
   },
+  unveil: {
+    family: 'Layered',
+    motion: 'The new page grows out of a corner over the old one, settling from a slight zoom as it opens, like an image revealed on scroll. The old page holds still until it is covered.',
+    header: 'With the page',
+  },
 };
 
 // The first direction is the Preset's default and is left out of the URL.
@@ -109,6 +115,7 @@ export const directions: Partial<Record<PresetId, readonly string[]>> = {
   split: ['left', 'top'],
   lines: ['left-top', 'right-top', 'left-bottom', 'right-bottom'],
   curtain: ['bottom', 'top', 'left', 'right'],
+  unveil: ['left-bottom', 'right-bottom', 'left-top', 'right-top'],
 };
 
 export function directionsOf(preset: PresetId) {

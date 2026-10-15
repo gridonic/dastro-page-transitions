@@ -246,6 +246,21 @@ const nav = [
           )
         }
         {
+          preset === 'unveil' && (
+            <label>
+              <span class="name">
+                Zoom
+                <Info text="How far the new page is zoomed in when it starts to grow out of its corner." />
+              </span>
+              <select data-var="--view-transition-unveil-scale">
+                <option value="1">None</option>
+                <option value="">1.08</option>
+                <option value="1.2">1.2</option>
+              </select>
+            </label>
+          )
+        }
+        {
           preset === 'blur' && (
             <label>
               <span class="name">
