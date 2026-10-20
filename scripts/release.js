@@ -18,7 +18,6 @@ const installTag = `github:${repo}#v`;
 
 const isDryRun = process.argv.includes('--dry-run');
 
-console.log(`Current version: ${currentVersion}`);
 if (isDryRun) {
   console.log('\n🔍 DRY RUN MODE - No commits or tags will be created');
 }
@@ -27,6 +26,100 @@ const rl = createInterface({
   input: process.stdin,
   output: process.stdout,
 });
+
+const ask = (question) =>
+  new Promise((resolve) =>
+    rl.question(question, (answer) => resolve(answer.trim())),
+  );
+
+const bumpVersion = (version, type) => {
+  const [major, minor, patch] = version.split('.').map(Number);
+  switch (type) {
+    case 'major':
+      return `${major + 1}.0.0`;
+    case 'minor':
+      return `${major}.${minor + 1}.0`;
+    case 'patch':
+      return `${major}.${minor}.${patch + 1}`;
+  }
+};
+
+const isHigherVersion = (version) => {
+  const currentParts = currentVersion.split('.').map(Number);
+  const newParts = version.split('.').map(Number);
+
+  for (let i = 0; i < 3; i++) {
+    if (newParts[i] > currentParts[i]) {
+      return true;
+    } else if (newParts[i] < currentParts[i]) {
+      return false;
+    }
+  }
+  return false;
+};
+
+const askCustomVersion = async () => {
+  const version = await ask('   Enter new version: ');
+
+  if (!/^\d+\.\d+\.\d+$/.test(version)) {
+    console.error(
+      '❌ Invalid version format! Please use semantic versioning (e.g., 1.2.3)',
+    );
+    return askCustomVersion();
+  }
+
+  if (!isHigherVersion(version)) {
+    console.error(
+      `❌ New version ${version} is not higher than current version ${currentVersion}!`,
+    );
+    return askCustomVersion();
+  }
+
+  return version;
+};
+
+const selectVersion = async () => {
+  console.log(`\n📦 Current version: v${currentVersion}`);
+  console.log('   Select version bump:');
+  console.log(`   1) patch  → ${bumpVersion(currentVersion, 'patch')}`);
+  console.log(`   2) minor  → ${bumpVersion(currentVersion, 'minor')}`);
+  console.log(`   3) major  → ${bumpVersion(currentVersion, 'major')}`);
+  console.log(`   4) keep   → ${currentVersion}`);
+  console.log('   5) custom → enter a version');
+
+  const choice = await ask('   Choice (1/2/3/4/5, default: 1): ');
+  switch (choice) {
+    case '2':
+      return bumpVersion(currentVersion, 'minor');
+    case '3':
+      return bumpVersion(currentVersion, 'major');
+    case '4':
+      return currentVersion;
+    case '5':
+      return askCustomVersion();
+    default:
+      return bumpVersion(currentVersion, 'patch');
+  }
+};
+
+const confirmPush = async (version) => {
+  const pushCommands = `git push && git push origin v${version}`;
+
+  if (isDryRun) {
+    console.log(`\n🔍 DRY RUN MODE - Would ask to run: ${pushCommands}`);
+    return;
+  }
+
+  const answer = await ask(`\n🚀 Run "${pushCommands}"? (yes/no): `);
+  if (!['y', 'yes'].includes(answer.toLowerCase())) {
+    console.log(`\n⏸️  Not pushed. To push later: ${pushCommands}`);
+    return;
+  }
+
+  execSync('git push', { stdio: 'inherit' });
+  execSync(`git push origin v${version}`, { stdio: 'inherit' });
+  console.log(`\n✅ Pushed main and tag v${version}`);
+};
 
 const collectChangelogEntries = () => {
   return new Promise((resolve) => {
@@ -151,46 +244,14 @@ const runRelease = async () => {
       console.log('\n✅ No staged changes found, proceeding...');
     }
 
-    const newVersion = await new Promise((resolve) => {
-      rl.question('Enter new version: ', resolve);
-    });
+    const newVersion = await selectVersion();
+    const isKeep = newVersion === currentVersion;
 
-    console.log(`New version will be: ${newVersion}`);
-
-    const semverRegex = /^\d+\.\d+\.\d+$/;
-
-    if (!semverRegex.test(newVersion)) {
-      console.error(
-        '❌ Invalid version format! Please use semantic versioning (e.g., 1.2.3)',
-      );
-      rl.close();
-      process.exit(1);
+    if (isKeep) {
+      console.log(`\n✅ Keeping version ${currentVersion}, nothing to bump`);
+      await confirmPush(currentVersion);
+      return;
     }
-
-    const currentParts = currentVersion.split('.').map(Number);
-    const newParts = newVersion.split('.').map(Number);
-
-    let isHigher = false;
-    for (let i = 0; i < 3; i++) {
-      if (newParts[i] > currentParts[i]) {
-        isHigher = true;
-        break;
-      } else if (newParts[i] < currentParts[i]) {
-        break;
-      }
-    }
-
-    if (!isHigher) {
-      console.error(
-        `❌ New version ${newVersion} is not higher than current version ${currentVersion}!`,
-      );
-      rl.close();
-      process.exit(1);
-    }
-
-    console.log(
-      `\n✅ Version ${newVersion} is valid and higher than current version ${currentVersion}`,
-    );
 
     console.log('\n🔍 Checking if tag already exists...');
     try {
@@ -258,6 +319,7 @@ const runRelease = async () => {
       console.log(
         `📋 Would commit with message: "build(${newVersion}): version bump"`,
       );
+      await confirmPush(newVersion);
       console.log('\n🎉 Dry run completed successfully!');
     } else {
       console.log('\n🔄 Committing changes...');
@@ -274,19 +336,8 @@ const runRelease = async () => {
       console.log(`\n✅ Tag v${newVersion} created successfully`);
 
       console.log('\n🎉 Release preparation completed successfully!');
-      console.log('\n📋 Next steps to release:');
-      console.log('   git push');
-      console.log('   git push origin v' + newVersion);
 
-      const pushCommands = `git push && git push origin v${newVersion}`;
-      try {
-        execSync(`echo "${pushCommands}" | pbcopy`, { stdio: 'pipe' });
-        console.log(`\n📋 Copied to clipboard: ${pushCommands}`);
-      } catch (clipboardError) {
-        console.log(
-          `\n⚠️  Could not copy to clipboard. Manual command: ${pushCommands}`,
-        );
-      }
+      await confirmPush(newVersion);
     }
   } catch (error) {
     console.error('❌ Error during release process:', error.message);
