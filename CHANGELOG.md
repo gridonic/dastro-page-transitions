@@ -1,3 +1,7 @@
+### [0.3.7](https://github.com/gridonic/dastro-page-transitions/compare/v0.3.6...v0.3.7)
+
+- add fix for fouc blip
+
 ### [0.3.6](https://github.com/gridonic/dastro-page-transitions/compare/v0.3.5...v0.3.6)
 
 - fix unveil transition
