@@ -44,6 +44,7 @@ An element that is on both pages of a **Page transition**, like an article's ima
 - **Shared elements** are not a **Preset** and do not replace it: they run on top of the Preset the site has
 - Every **Shared element** on a page is a **Named group** in every navigation. One without a counterpart on the other page replays the **Preset**, which only matches the page under fade, rise, dip and blur; under the other Presets nothing is shared
 - `prefers-reduced-motion` means no **Page transition** animation
+- Both pages of the swap run on the main thread, so they end in the same frame ([ADR 0009](./docs/adr/0009-page-swap-on-main-thread.md)). Sites can opt out with Sass `$main-thread`
 
 ## Example dialogue
 

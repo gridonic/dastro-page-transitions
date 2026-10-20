@@ -1,19 +1,38 @@
 @use 'config';
 
+// Every keyframe of the page swap also animates
+// `--view-transition-main-thread`, a custom property that has no effect.
+// An animation with a custom property cannot run on the compositor, so both
+// pages run on the main thread and end in the same frame. On the compositor
+// the new page's animation can end a frame before the main thread has its
+// end state: for that frame the new page is back at its start, clipped or
+// see-through, and the old page shows through. It shows in Chrome with GPU
+// compositing under load, not in headless Chrome. `reveal` animates a custom
+// property already. `$main-thread: false` leaves the property out.
+@mixin main-thread($at) {
+  @if config.$main-thread {
+    --view-transition-main-thread: #{$at};
+  }
+}
+
 @keyframes fade-in {
   from {
+    @include main-thread(0);
     opacity: 0;
   }
   to {
+    @include main-thread(1);
     opacity: 1;
   }
 }
 
 @keyframes fade-out {
   from {
+    @include main-thread(0);
     opacity: 1;
   }
   to {
+    @include main-thread(1);
     opacity: 0;
   }
 }
@@ -21,9 +40,11 @@
 // The old page stays put underneath while the new one arrives on top.
 @keyframes hold {
   from {
+    @include main-thread(0);
     opacity: 1;
   }
   to {
+    @include main-thread(1);
     opacity: 1;
   }
 }
@@ -31,10 +52,12 @@
 @if config.has(rise) {
   @keyframes rise-in {
     from {
+      @include main-thread(0);
       opacity: 0;
       transform: translateY(2rem);
     }
     to {
+      @include main-thread(1);
       opacity: 1;
       transform: translateY(0);
     }
@@ -42,10 +65,12 @@
 
   @keyframes rise-out {
     from {
+      @include main-thread(0);
       opacity: 1;
       transform: translateY(0);
     }
     to {
+      @include main-thread(1);
       opacity: 0;
       transform: translateY(-1rem);
     }
@@ -56,12 +81,14 @@
 @if config.has(slide, cover) {
   @keyframes slide-in {
     from {
+      @include main-thread(0);
       transform: translate(
         calc(var(--view-transition-from-x) * 100%),
         calc(var(--view-transition-from-y) * 100%)
       );
     }
     to {
+      @include main-thread(1);
       transform: translate(0, 0);
     }
   }
@@ -70,9 +97,11 @@
 @if config.has(slide) {
   @keyframes slide-out {
     from {
+      @include main-thread(0);
       transform: translate(0, 0);
     }
     to {
+      @include main-thread(1);
       transform: translate(
         calc(var(--view-transition-from-x) * -100%),
         calc(var(--view-transition-from-y) * -100%)
@@ -87,6 +116,7 @@
 @if config.has(flip) {
   @keyframes flip-out {
     from {
+      @include main-thread(0);
       transform: perspective(var(--view-transition-perspective))
         rotate3d(
           var(--view-transition-from-y),
@@ -96,6 +126,7 @@
         );
     }
     to {
+      @include main-thread(1);
       transform: perspective(var(--view-transition-perspective))
         rotate3d(
           var(--view-transition-from-y),
@@ -108,6 +139,7 @@
 
   @keyframes flip-in {
     from {
+      @include main-thread(0);
       transform: perspective(var(--view-transition-perspective))
         rotate3d(
           var(--view-transition-from-y),
@@ -117,6 +149,7 @@
         );
     }
     to {
+      @include main-thread(1);
       transform: perspective(var(--view-transition-perspective))
         rotate3d(
           var(--view-transition-from-y),
@@ -131,10 +164,12 @@
 @if config.has(cover) {
   @keyframes cover-out {
     from {
+      @include main-thread(0);
       filter: brightness(1);
       transform: scale(1);
     }
     to {
+      @include main-thread(1);
       filter: brightness(0.6);
       transform: scale(0.96);
     }
@@ -154,11 +189,13 @@
 
   @keyframes curtain-out {
     from {
+      @include main-thread(0);
       clip-path: inset(0);
       opacity: 1;
       transform: translate(0, 0);
     }
     to {
+      @include main-thread(1);
       clip-path: inset(
         calc(max(0, #{$y} * -1) * #{$clip}) calc(max(0, #{$x}) * #{$clip})
           calc(max(0, #{$y}) * #{$clip}) calc(max(0, #{$x} * -1) * #{$clip})
@@ -170,6 +207,7 @@
 
   @keyframes curtain-in {
     from {
+      @include main-thread(0);
       clip-path: inset(
         calc(max(0, #{$y}) * #{$clip}) calc(max(0, #{$x} * -1) * #{$clip})
           calc(max(0, #{$y} * -1) * #{$clip}) calc(max(0, #{$x}) * #{$clip})
@@ -178,6 +216,7 @@
       transform: translate(calc(#{$x} * #{$drift}), calc(#{$y} * #{$drift}));
     }
     to {
+      @include main-thread(1);
       clip-path: inset(0);
       opacity: 1;
       transform: translate(0, 0);
@@ -199,6 +238,7 @@
 
   @keyframes unveil-in {
     from {
+      @include main-thread(0);
       clip-path: inset(
         calc(max(0, #{$y}) * 100%) calc(max(0, #{$x} * -1) * 100%)
           calc(max(0, #{$y} * -1) * 100%) calc(max(0, #{$x}) * 100%)
@@ -210,6 +250,7 @@
       opacity: 1;
     }
     to {
+      @include main-thread(1);
       clip-path: inset(calc(var(--view-transition-unveil-overshoot) * -1));
       opacity: 1;
       transform: scale(1);
@@ -232,10 +273,12 @@
 @if config.has(blur) {
   @keyframes blur-in {
     from {
+      @include main-thread(0);
       opacity: 0;
       filter: blur(var(--view-transition-blur));
     }
     to {
+      @include main-thread(1);
       opacity: 1;
       filter: blur(0);
     }
@@ -243,10 +286,12 @@
 
   @keyframes blur-out {
     from {
+      @include main-thread(0);
       opacity: 1;
       filter: blur(0);
     }
     to {
+      @include main-thread(1);
       opacity: 0;
       filter: blur(var(--view-transition-blur));
     }

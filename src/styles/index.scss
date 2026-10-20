@@ -1,4 +1,4 @@
-@forward 'config' show $presets, $edge-blur, $shared-elements, $lines-bands, $lines-sweep;
+@forward 'config' show $presets, $edge-blur, $shared-elements, $main-thread, $lines-bands, $lines-sweep;
 @use 'base';
 @use 'helpers';
 @use 'keyframes';

@@ -44,6 +44,7 @@ The import above contains every Preset, about 60 KB of CSS before minification. 
 | `$presets` | every Preset | The Presets to ship: one name or a list, `(slide, cover)`. Fade always ships. |
 | `$edge-blur` | `true` | Whether to ship the [blurred seam](#blurred-seam-optional). Set it to `false` unless the site uses `view-transition-edge-blur`. |
 | `$shared-elements` | `true` | Whether to ship [Shared elements](#6-shared-elements-optional). Set it to `false` unless the site uses the `view-transition-shared` classes. |
+| `$main-thread` | `true` | Runs the page swap on the main thread, so the old and new page end in the same frame. `false` lets the browser run it on the compositor, at the risk of the [old page showing for one frame](#7-check-for-a-blip) at the end. |
 | `$lines-bands` | `24` | How many bands `lines` cuts the page into. Fewer bands is less CSS. |
 | `$lines-sweep` | `0.55` | Share of `lines` spent starting the bands; the rest is one band's wipe. |
 
@@ -159,6 +160,8 @@ Projects already put these on header modules and the site bar. Leave them:
 
 The **Preset** decides what `.view-transition-header` does: under fade, rise, dip and blur it arrives a beat after the page; under the others it moves as part of the page. `.view-transition-site-header` does not animate, except under curtain, where it is part of the page too.
 
+Put each class on the element that draws the part, not on a wrapper. A **Named group** is a picture of the element's own box: a sticky site-header that is 0px high, with its bar hanging out of it, is captured empty, and the site-header disappears for the whole transition.
+
 ---
 
 ## 5. Check reduced motion
@@ -221,3 +224,17 @@ Give the element a class and a name, the same on both pages. The name has to be 
 |---|---|---|
 | `--view-transition-shared-duration` | the Preset's length | How long a Shared element travels. By default it lands when the new page has arrived. |
 | `--view-transition-shared-ease` | `cubic-bezier(0.6, 0, 0.1, 1)` | Easing of the travel. |
+
+---
+
+## 7. Check for a blip
+
+Look at a few navigations frame by frame before launch, in Chrome itself:
+
+1. DevTools → **Performance** → tick **Screenshots**.
+2. Record a click to another page and stop a second after it has arrived. Keep it short: Chrome keeps about 450 screenshots.
+3. Step through the screenshots around the start and the end of the transition.
+
+A single frame of the old page at the end means the swap ran on the compositor: check that `$main-thread` is not `false`. Headless Chrome does not show this, because it runs these animations on the main thread anyway, so automated screenshots do not replace the check.
+
+Going back with the browser's Back button, Chrome can show the restored page for one frame before the transition starts. That comes from the back/forward cache, not from the stylesheet.

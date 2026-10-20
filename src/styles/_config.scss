@@ -16,6 +16,10 @@ $presets: $all-presets !default;
 $edge-blur: true !default;
 // Whether to ship Shared elements, the `view-transition-shared` classes.
 $shared-elements: true !default;
+// Whether the page swap runs on the main thread (see _keyframes.scss). Off
+// lets the browser run it on the compositor, at the risk of the old page
+// showing for one frame at the end.
+$main-thread: true !default;
 // lines: how many bands the page is cut into.
 $lines-bands: 24 !default;
 // lines: share of the progress spent starting the bands; the rest is one
