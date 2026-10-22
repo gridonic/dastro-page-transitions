@@ -15,7 +15,7 @@
   }
 }
 
-@keyframes fade-in {
+@keyframes view-transition-fade-in {
   from {
     @include main-thread(0);
     opacity: 0;
@@ -26,7 +26,7 @@
   }
 }
 
-@keyframes fade-out {
+@keyframes view-transition-fade-out {
   from {
     @include main-thread(0);
     opacity: 1;
@@ -38,7 +38,7 @@
 }
 
 // The old page stays put underneath while the new one arrives on top.
-@keyframes hold {
+@keyframes view-transition-hold {
   from {
     @include main-thread(0);
     opacity: 1;
@@ -50,7 +50,7 @@
 }
 
 @if config.has(rise) {
-  @keyframes rise-in {
+  @keyframes view-transition-rise-in {
     from {
       @include main-thread(0);
       opacity: 0;
@@ -63,7 +63,7 @@
     }
   }
 
-  @keyframes rise-out {
+  @keyframes view-transition-rise-out {
     from {
       @include main-thread(0);
       opacity: 1;
@@ -79,7 +79,7 @@
 
 // slide and cover start from the edge set by `view-transition-from-*`.
 @if config.has(slide, cover) {
-  @keyframes slide-in {
+  @keyframes view-transition-slide-in {
     from {
       @include main-thread(0);
       transform: translate(
@@ -95,7 +95,7 @@
 }
 
 @if config.has(slide) {
-  @keyframes slide-out {
+  @keyframes view-transition-slide-out {
     from {
       @include main-thread(0);
       transform: translate(0, 0);
@@ -114,7 +114,7 @@
 // `view-transition-from-*`. Each page only ever shows its front: the old one
 // turns away to edge-on, then the new one turns in from edge-on.
 @if config.has(flip) {
-  @keyframes flip-out {
+  @keyframes view-transition-flip-out {
     from {
       @include main-thread(0);
       transform: perspective(var(--view-transition-perspective))
@@ -137,7 +137,7 @@
     }
   }
 
-  @keyframes flip-in {
+  @keyframes view-transition-flip-in {
     from {
       @include main-thread(0);
       transform: perspective(var(--view-transition-perspective))
@@ -162,7 +162,7 @@
 }
 
 @if config.has(cover) {
-  @keyframes cover-out {
+  @keyframes view-transition-cover-out {
     from {
       @include main-thread(0);
       filter: brightness(1);
@@ -187,7 +187,7 @@
   $x: var(--view-transition-from-x);
   $y: var(--view-transition-from-y);
 
-  @keyframes curtain-out {
+  @keyframes view-transition-curtain-out {
     from {
       @include main-thread(0);
       clip-path: inset(0);
@@ -205,7 +205,7 @@
     }
   }
 
-  @keyframes curtain-in {
+  @keyframes view-transition-curtain-in {
     from {
       @include main-thread(0);
       clip-path: inset(
@@ -236,7 +236,7 @@
   $x: var(--view-transition-unveil-x);
   $y: var(--view-transition-unveil-y);
 
-  @keyframes unveil-in {
+  @keyframes view-transition-unveil-in {
     from {
       @include main-thread(0);
       clip-path: inset(
@@ -260,7 +260,7 @@
 
 // wipe, iris and lines are masks driven by `--view-transition-progress`.
 @if config.$reveal or config.$edge {
-  @keyframes reveal {
+  @keyframes view-transition-reveal {
     from {
       --view-transition-progress: 0;
     }
@@ -271,7 +271,7 @@
 }
 
 @if config.has(blur) {
-  @keyframes blur-in {
+  @keyframes view-transition-blur-in {
     from {
       @include main-thread(0);
       opacity: 0;
@@ -284,7 +284,7 @@
     }
   }
 
-  @keyframes blur-out {
+  @keyframes view-transition-blur-out {
     from {
       @include main-thread(0);
       opacity: 1;

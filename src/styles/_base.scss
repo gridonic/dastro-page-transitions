@@ -81,8 +81,8 @@
   }
 
   // The Preset bundle. These are fade; a Preset overrides what differs.
-  --view-transition-old-name: fade-out;
-  --view-transition-new-name: fade-in;
+  --view-transition-old-name: view-transition-fade-out;
+  --view-transition-new-name: view-transition-fade-in;
   --view-transition-old-duration: var(--view-transition-duration);
   --view-transition-new-duration: var(--view-transition-duration);
   --view-transition-old-delay: 0s;

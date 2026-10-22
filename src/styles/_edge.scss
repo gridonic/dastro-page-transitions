@@ -67,7 +67,7 @@ $progress: var(--view-transition-progress);
           --view-transition-new-ease,
           var(--view-transition-ease, var(--view-transition-preset-new-ease))
         )
-        var(--view-transition-new-delay) both reveal;
+        var(--view-transition-new-delay) both view-transition-reveal;
       // Fades the blur in and out over the first and last eighth, where the band
       // is half off screen.
       backdrop-filter: blur(

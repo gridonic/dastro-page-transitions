@@ -55,11 +55,11 @@
   }
 
   ::view-transition-old(*.shared) {
-    animation-name: fade-out;
+    animation-name: view-transition-fade-out;
   }
 
   ::view-transition-new(*.shared) {
-    animation-name: fade-in;
+    animation-name: view-transition-fade-in;
   }
 
   // An image fills the box at every size, cropped like `object-fit: cover`, so
